@@ -48,8 +48,9 @@ class ClassRenameVisitor extends GeneralizingAstVisitor<void> {
             // )
             .toList(),
         augmentKeyword: node.augmentKeyword,
+        namePart: node.namePart,
+        body: node.body,
         abstractKeyword: node.abstractKeyword,
-        macroKeyword: node.macroKeyword,
         sealedKeyword: node.sealedKeyword,
         baseKeyword: node.baseKeyword,
         interfaceKeyword: node.interfaceKeyword,
