@@ -44,7 +44,7 @@ class ReactiveForm {
         ),
         Parameter(
           (b) => b
-            ..name = 'onPopInvokedWithResult'
+            ..name = 'onPopInvokedWithResultWithResult'
             ..toThis = true
             ..named = true,
         ),
@@ -83,7 +83,7 @@ class ReactiveForm {
         ),
         Field(
           (b) => b
-            ..name = 'onPopInvokedWithResult'
+            ..name = 'onPopInvokedWithResultWithResult'
             ..modifier = FieldModifier.final$
             ..type = const Reference(
               'void Function(FormGroup formGroup, bool didPop, dynamic? result)?',
@@ -145,7 +145,7 @@ class ReactiveForm {
                       stream: form.form.statusChanged,
                       child: ReactiveFormPopScope(
                         canPop: canPop,
-                        onPopInvokedWithResult: onPopInvokedWithResult,
+                        onPopInvokedWithResultWithResult: onPopInvokedWithResultWithResult,
                         child: child,
                       ),
                     );

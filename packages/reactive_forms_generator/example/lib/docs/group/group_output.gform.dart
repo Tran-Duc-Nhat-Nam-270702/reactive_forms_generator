@@ -53,7 +53,7 @@ class ReactiveGroupOForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -62,7 +62,7 @@ class ReactiveGroupOForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
 
   static GroupOForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -85,7 +85,7 @@ class ReactiveGroupOForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -104,7 +104,7 @@ class GroupOFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -115,7 +115,7 @@ class GroupOFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -198,11 +198,11 @@ class _GroupOFormBuilderState extends State<GroupOFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -234,7 +234,7 @@ class GroupOForm implements FormModel<GroupO, GroupOOutput> {
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, Object?> initial;
+  final Map<String, dynamic> initial;
 
   String personalControlPath() => pathBuilder(personalControlName);
 
@@ -302,13 +302,13 @@ class GroupOForm implements FormModel<GroupO, GroupOOutput> {
     }
   }
 
-  Map<String, Object>? get personalErrors => personalControl.errors;
+  Map<String, dynamic>? get personalErrors => personalControl.errors;
 
-  Map<String, Object>? get phoneErrors => phoneControl.errors;
+  Map<String, dynamic>? get phoneErrors => phoneControl.errors;
 
-  Map<String, Object>? get addressErrors => addressControl.errors;
+  Map<String, dynamic>? get addressErrors => addressControl.errors;
 
-  Map<String, Object>? get address2Errors => address2Control.errors;
+  Map<String, dynamic>? get address2Errors => address2Control.errors;
 
   void get personalFocus => form.focus(personalControlPath());
 
@@ -784,7 +784,7 @@ class GroupOForm implements FormModel<GroupO, GroupOOutput> {
   );
 
   @override
-  void updateInitial(Map<String, Object?>? value, String? path) {
+  void updateInitial(Map<String, dynamic>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -812,7 +812,7 @@ class GroupOForm implements FormModel<GroupO, GroupOOutput> {
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, Object?>{};
+          current[key] = <String, dynamic>{};
         }
         current = current[key];
         continue;
@@ -869,7 +869,7 @@ class PersonalOForm implements FormModel<PersonalO, PersonalOOutput> {
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, Object?> initial;
+  final Map<String, dynamic> initial;
 
   String nameControlPath() => pathBuilder(nameControlName);
 
@@ -901,9 +901,9 @@ class PersonalOForm implements FormModel<PersonalO, PersonalOOutput> {
     }
   }
 
-  Map<String, Object>? get nameErrors => nameControl.errors;
+  Map<String, dynamic>? get nameErrors => nameControl.errors;
 
-  Map<String, Object>? get emailErrors => emailControl.errors;
+  Map<String, dynamic>? get emailErrors => emailControl.errors;
 
   void get nameFocus => form.focus(nameControlPath());
 
@@ -1190,7 +1190,7 @@ class PersonalOForm implements FormModel<PersonalO, PersonalOOutput> {
   );
 
   @override
-  void updateInitial(Map<String, Object?>? value, String? path) {
+  void updateInitial(Map<String, dynamic>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -1218,7 +1218,7 @@ class PersonalOForm implements FormModel<PersonalO, PersonalOOutput> {
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, Object?>{};
+          current[key] = <String, dynamic>{};
         }
         current = current[key];
         continue;
@@ -1286,7 +1286,7 @@ class PhoneOForm implements FormModel<PhoneO, PhoneOOutput> {
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, Object?> initial;
+  final Map<String, dynamic> initial;
 
   String phoneNumberControlPath() => pathBuilder(phoneNumberControlName);
 
@@ -1322,9 +1322,9 @@ class PhoneOForm implements FormModel<PhoneO, PhoneOOutput> {
     }
   }
 
-  Map<String, Object>? get phoneNumberErrors => phoneNumberControl.errors;
+  Map<String, dynamic>? get phoneNumberErrors => phoneNumberControl.errors;
 
-  Map<String, Object>? get countryIsoErrors => countryIsoControl.errors;
+  Map<String, dynamic>? get countryIsoErrors => countryIsoControl.errors;
 
   void get phoneNumberFocus => form.focus(phoneNumberControlPath());
 
@@ -1617,7 +1617,7 @@ class PhoneOForm implements FormModel<PhoneO, PhoneOOutput> {
   );
 
   @override
-  void updateInitial(Map<String, Object?>? value, String? path) {
+  void updateInitial(Map<String, dynamic>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -1645,7 +1645,7 @@ class PhoneOForm implements FormModel<PhoneO, PhoneOOutput> {
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, Object?>{};
+          current[key] = <String, dynamic>{};
         }
         current = current[key];
         continue;
@@ -1715,7 +1715,7 @@ class AddressOForm implements FormModel<AddressO, AddressOOutput> {
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, Object?> initial;
+  final Map<String, dynamic> initial;
 
   String streetControlPath() => pathBuilder(streetControlName);
 
@@ -1762,11 +1762,11 @@ class AddressOForm implements FormModel<AddressO, AddressOOutput> {
     }
   }
 
-  Map<String, Object>? get streetErrors => streetControl.errors;
+  Map<String, dynamic>? get streetErrors => streetControl.errors;
 
-  Map<String, Object>? get cityErrors => cityControl.errors;
+  Map<String, dynamic>? get cityErrors => cityControl.errors;
 
-  Map<String, Object>? get zipErrors => zipControl.errors;
+  Map<String, dynamic>? get zipErrors => zipControl.errors;
 
   void get streetFocus => form.focus(streetControlPath());
 
@@ -2145,7 +2145,7 @@ class AddressOForm implements FormModel<AddressO, AddressOOutput> {
   );
 
   @override
-  void updateInitial(Map<String, Object?>? value, String? path) {
+  void updateInitial(Map<String, dynamic>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -2173,7 +2173,7 @@ class AddressOForm implements FormModel<AddressO, AddressOOutput> {
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, Object?>{};
+          current[key] = <String, dynamic>{};
         }
         current = current[key];
         continue;
@@ -2435,13 +2435,13 @@ class ReactiveGroupOFormFormGroupArrayBuilder<
        super(key: key);
 
   final ExtendedControl<
-    List<Map<String, Object?>?>,
+    List<Map<String, dynamic>?>,
     List<ReactiveGroupOFormFormGroupArrayBuilderT>
   >?
   extended;
 
   final ExtendedControl<
-    List<Map<String, Object?>?>,
+    List<Map<String, dynamic>?>,
     List<ReactiveGroupOFormFormGroupArrayBuilderT>
   >
   Function(GroupOForm formModel)?
@@ -2472,7 +2472,7 @@ class ReactiveGroupOFormFormGroupArrayBuilder<
 
     final value = (extended ?? getExtended?.call(formModel))!;
 
-    return StreamBuilder<List<Map<String, Object?>?>?>(
+    return StreamBuilder<List<Map<String, dynamic>?>?>(
       stream: value.control.valueChanges,
       builder: (context, snapshot) {
         final itemList =

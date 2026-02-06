@@ -87,7 +87,7 @@ class ReactiveStatusListOForm<T extends Enum> extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -96,7 +96,7 @@ class ReactiveStatusListOForm<T extends Enum> extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
 
   static StatusListOForm<T>? of<T extends Enum>(
     BuildContext context, {
@@ -126,7 +126,7 @@ class ReactiveStatusListOForm<T extends Enum> extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -147,7 +147,7 @@ class StatusListOFormBuilder<T extends Enum> extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -158,7 +158,7 @@ class StatusListOFormBuilder<T extends Enum> extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -248,11 +248,11 @@ class _StatusListOFormBuilderState<T extends Enum>
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -280,7 +280,7 @@ class StatusListOForm<T extends Enum>
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, Object?> initial;
+  final Map<String, dynamic> initial;
 
   String listControlPath() => pathBuilder(listControlName);
 
@@ -297,7 +297,7 @@ class StatusListOForm<T extends Enum>
     }
   }
 
-  Map<String, Object> get listErrors => listControl.errors;
+  Map<String, dynamic> get listErrors => listControl.errors;
 
   void get listFocus => form.focus(listControlPath());
 
@@ -522,7 +522,7 @@ class StatusListOForm<T extends Enum>
   );
 
   @override
-  void updateInitial(Map<String, Object?>? value, String? path) {
+  void updateInitial(Map<String, dynamic>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -550,7 +550,7 @@ class StatusListOForm<T extends Enum>
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, Object?>{};
+          current[key] = <String, dynamic>{};
         }
         current = current[key];
         continue;
@@ -786,13 +786,13 @@ class ReactiveStatusListOFormFormGroupArrayBuilder<
        super(key: key);
 
   final ExtendedControl<
-    List<Map<String, Object?>?>,
+    List<Map<String, dynamic>?>,
     List<ReactiveStatusListOFormFormGroupArrayBuilderT>
   >?
   extended;
 
   final ExtendedControl<
-    List<Map<String, Object?>?>,
+    List<Map<String, dynamic>?>,
     List<ReactiveStatusListOFormFormGroupArrayBuilderT>
   >
   Function(StatusListOForm<T> formModel)?
@@ -823,7 +823,7 @@ class ReactiveStatusListOFormFormGroupArrayBuilder<
 
     final value = (extended ?? getExtended?.call(formModel))!;
 
-    return StreamBuilder<List<Map<String, Object?>?>?>(
+    return StreamBuilder<List<Map<String, dynamic>?>?>(
       stream: value.control.valueChanges,
       builder: (context, snapshot) {
         final itemList =

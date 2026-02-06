@@ -9,7 +9,7 @@ class ReactiveFormGroupArrayItemBuilder<T> extends StatelessWidget {
     this.emptyBuilder,
   });
 
-  final ExtendedControl<List<Map<String, Object?>?>, List<T>> extended;
+  final ExtendedControl<List<Map<String, dynamic>?>, List<T>> extended;
 
   final Widget Function(BuildContext context, List<Widget> itemList)? builder;
 
@@ -21,7 +21,7 @@ class ReactiveFormGroupArrayItemBuilder<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final value = extended;
 
-    return StreamBuilder<List<Map<String, Object?>?>?>(
+    return StreamBuilder<List<Map<String, dynamic>?>?>(
       stream: value.control.valueChanges,
       builder: (context, snapshot) {
         final itemList = (value.value() ?? <T>[])

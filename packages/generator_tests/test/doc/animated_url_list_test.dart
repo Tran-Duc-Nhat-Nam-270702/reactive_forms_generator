@@ -103,7 +103,7 @@ class ReactiveAnimatedUrlListForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -112,7 +112,7 @@ class ReactiveAnimatedUrlListForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
 
   static AnimatedUrlListForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -139,7 +139,7 @@ class ReactiveAnimatedUrlListForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -160,7 +160,7 @@ class AnimatedUrlListFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -171,7 +171,7 @@ class AnimatedUrlListFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -261,11 +261,11 @@ class _AnimatedUrlListFormBuilderState
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -293,7 +293,7 @@ class AnimatedUrlListForm
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, Object?> initial;
+  final Map<String, dynamic> initial;
 
   String urlListControlPath() => pathBuilder(urlListControlName);
 
@@ -312,7 +312,7 @@ class AnimatedUrlListForm
     }
   }
 
-  Map<String, Object> get urlListErrors => urlListControl.errors;
+  Map<String, dynamic> get urlListErrors => urlListControl.errors;
 
   void get urlListFocus => form.focus(urlListControlPath());
 
@@ -419,8 +419,8 @@ class AnimatedUrlListForm
     emitEvent: emitEvent,
   );
 
-  FormArray<Map<String, Object?>> get urlListControl =>
-      form.control(urlListControlPath()) as FormArray<Map<String, Object?>>;
+  FormArray<Map<String, dynamic>> get urlListControl =>
+      form.control(urlListControlPath()) as FormArray<Map<String, dynamic>>;
 
   List<UrlEntityForm> get urlListUrlEntityForm {
     final values = urlListControl.controls.map((e) => e.value).toList();
@@ -455,10 +455,10 @@ class AnimatedUrlListForm
     }
   }
 
-  ExtendedControl<List<Map<String, Object?>?>, List<UrlEntityForm>>
+  ExtendedControl<List<Map<String, dynamic>?>, List<UrlEntityForm>>
   get urlListExtendedControl =>
-      ExtendedControl<List<Map<String, Object?>?>, List<UrlEntityForm>>(
-        form.control(urlListControlPath()) as FormArray<Map<String, Object?>>,
+      ExtendedControl<List<Map<String, dynamic>?>, List<UrlEntityForm>>(
+        form.control(urlListControlPath()) as FormArray<Map<String, dynamic>>,
         () => urlListUrlEntityForm,
       );
 
@@ -596,7 +596,7 @@ class AnimatedUrlListForm
   );
 
   @override
-  void updateInitial(Map<String, Object?>? value, String? path) {
+  void updateInitial(Map<String, dynamic>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -624,7 +624,7 @@ class AnimatedUrlListForm
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, Object?>{};
+          current[key] = <String, dynamic>{};
         }
         current = current[key];
         continue;
@@ -686,7 +686,7 @@ class UrlEntityForm implements FormModel<UrlEntity, UrlEntity> {
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, Object?> initial;
+  final Map<String, dynamic> initial;
 
   String labelControlPath() => pathBuilder(labelControlName);
 
@@ -718,9 +718,9 @@ class UrlEntityForm implements FormModel<UrlEntity, UrlEntity> {
     }
   }
 
-  Map<String, Object> get labelErrors => labelControl.errors;
+  Map<String, dynamic> get labelErrors => labelControl.errors;
 
-  Map<String, Object> get urlErrors => urlControl.errors;
+  Map<String, dynamic> get urlErrors => urlControl.errors;
 
   void get labelFocus => form.focus(labelControlPath());
 
@@ -960,7 +960,7 @@ class UrlEntityForm implements FormModel<UrlEntity, UrlEntity> {
   );
 
   @override
-  void updateInitial(Map<String, Object?>? value, String? path) {
+  void updateInitial(Map<String, dynamic>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -988,7 +988,7 @@ class UrlEntityForm implements FormModel<UrlEntity, UrlEntity> {
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, Object?>{};
+          current[key] = <String, dynamic>{};
         }
         current = current[key];
         continue;
@@ -1217,13 +1217,13 @@ class ReactiveAnimatedUrlListFormFormGroupArrayBuilder<
        super(key: key);
 
   final ExtendedControl<
-    List<Map<String, Object?>?>,
+    List<Map<String, dynamic>?>,
     List<ReactiveAnimatedUrlListFormFormGroupArrayBuilderT>
   >?
   extended;
 
   final ExtendedControl<
-    List<Map<String, Object?>?>,
+    List<Map<String, dynamic>?>,
     List<ReactiveAnimatedUrlListFormFormGroupArrayBuilderT>
   >
   Function(AnimatedUrlListForm formModel)?
@@ -1254,7 +1254,7 @@ class ReactiveAnimatedUrlListFormFormGroupArrayBuilder<
 
     final value = (extended ?? getExtended?.call(formModel))!;
 
-    return StreamBuilder<List<Map<String, Object?>?>?>(
+    return StreamBuilder<List<Map<String, dynamic>?>?>(
       stream: value.control.valueChanges,
       builder: (context, snapshot) {
         final itemList =

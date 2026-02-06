@@ -12,7 +12,7 @@ abstract class FormModel<TModel, TModelOutput> {
 
   final String? path;
 
-  final Map<String, Object?>? initial = null;
+  final Map<String, dynamic>? initial = null;
 
   @protected
   TModelOutput get model;
@@ -44,7 +44,7 @@ abstract class FormModel<TModel, TModelOutput> {
 
   reset({TModel? value, bool updateParent = true, bool emitEvent = true});
 
-  void updateInitial(Map<String, Object?>? value, String? path);
+  void updateInitial(Map<String, dynamic>? value, String? path);
 
   void toggleDisabled({bool updateParent = true, bool emitEvent = true});
 }

@@ -46,7 +46,7 @@ class ReactiveTestForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -55,7 +55,7 @@ class ReactiveTestForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
 
   static TestForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -78,7 +78,7 @@ class ReactiveTestForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -97,7 +97,7 @@ class TestFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -108,7 +108,7 @@ class TestFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
 
   final Widget Function(BuildContext context, TestForm formModel, Widget? child)
   builder;
@@ -187,11 +187,11 @@ class _TestFormBuilderState extends State<TestFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -219,7 +219,7 @@ class TestForm implements FormModel<Test, Test> {
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, Object?> initial;
+  final Map<String, dynamic> initial;
 
   String titleControlPath() => pathBuilder(titleControlName);
 
@@ -253,9 +253,9 @@ class TestForm implements FormModel<Test, Test> {
     }
   }
 
-  Map<String, Object> get titleErrors => titleControl.errors;
+  Map<String, dynamic> get titleErrors => titleControl.errors;
 
-  Map<String, Object>? get descriptionErrors => descriptionControl.errors;
+  Map<String, dynamic>? get descriptionErrors => descriptionControl.errors;
 
   void get titleFocus => form.focus(titleControlPath());
 
@@ -515,7 +515,7 @@ class TestForm implements FormModel<Test, Test> {
       );
 
   @override
-  void updateInitial(Map<String, Object?>? value, String? path) {
+  void updateInitial(Map<String, dynamic>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -543,7 +543,7 @@ class TestForm implements FormModel<Test, Test> {
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, Object?>{};
+          current[key] = <String, dynamic>{};
         }
         current = current[key];
         continue;
@@ -751,13 +751,13 @@ class ReactiveTestFormFormGroupArrayBuilder<
        super(key: key);
 
   final ExtendedControl<
-    List<Map<String, Object?>?>,
+    List<Map<String, dynamic>?>,
     List<ReactiveTestFormFormGroupArrayBuilderT>
   >?
   extended;
 
   final ExtendedControl<
-    List<Map<String, Object?>?>,
+    List<Map<String, dynamic>?>,
     List<ReactiveTestFormFormGroupArrayBuilderT>
   >
   Function(TestForm formModel)?
@@ -788,7 +788,7 @@ class ReactiveTestFormFormGroupArrayBuilder<
 
     final value = (extended ?? getExtended?.call(formModel))!;
 
-    return StreamBuilder<List<Map<String, Object?>?>?>(
+    return StreamBuilder<List<Map<String, dynamic>?>?>(
       stream: value.control.valueChanges,
       builder: (context, snapshot) {
         final itemList =

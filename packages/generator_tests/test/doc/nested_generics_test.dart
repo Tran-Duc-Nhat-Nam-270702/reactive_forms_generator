@@ -126,7 +126,7 @@ class ReactiveProductDetailsForm<P extends Product, C extends Cart>
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -135,7 +135,7 @@ class ReactiveProductDetailsForm<P extends Product, C extends Cart>
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
 
   static ProductDetailsForm<P, C>? of<P extends Product, C extends Cart>(
     BuildContext context, {
@@ -165,7 +165,7 @@ class ReactiveProductDetailsForm<P extends Product, C extends Cart>
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -189,7 +189,7 @@ class ProductDetailsFormBuilder<P extends Product, C extends Cart>
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -200,7 +200,7 @@ class ProductDetailsFormBuilder<P extends Product, C extends Cart>
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -290,11 +290,11 @@ class _ProductDetailsFormBuilderState<P extends Product, C extends Cart>
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -324,7 +324,7 @@ class ProductDetailsForm<P extends Product, C extends Cart>
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, Object?> initial;
+  final Map<String, dynamic> initial;
 
   String descriptionControlPath() => pathBuilder(descriptionControlName);
 
@@ -358,9 +358,9 @@ class ProductDetailsForm<P extends Product, C extends Cart>
     }
   }
 
-  Map<String, Object>? get descriptionErrors => descriptionControl.errors;
+  Map<String, dynamic>? get descriptionErrors => descriptionControl.errors;
 
-  Map<String, Object>? get idErrors => idControl.errors;
+  Map<String, dynamic>? get idErrors => idControl.errors;
 
   void get descriptionFocus => form.focus(descriptionControlPath());
 
@@ -648,7 +648,7 @@ class ProductDetailsForm<P extends Product, C extends Cart>
   );
 
   @override
-  void updateInitial(Map<String, Object?>? value, String? path) {
+  void updateInitial(Map<String, dynamic>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -676,7 +676,7 @@ class ProductDetailsForm<P extends Product, C extends Cart>
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, Object?>{};
+          current[key] = <String, dynamic>{};
         }
         current = current[key];
         continue;
@@ -740,7 +740,7 @@ class IdForm<P extends Product, C extends Cart>
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, Object?> initial;
+  final Map<String, dynamic> initial;
 
   String companyNameControlPath() => pathBuilder(companyNameControlName);
 
@@ -774,9 +774,9 @@ class IdForm<P extends Product, C extends Cart>
     }
   }
 
-  Map<String, Object>? get companyNameErrors => companyNameControl.errors;
+  Map<String, dynamic>? get companyNameErrors => companyNameControl.errors;
 
-  Map<String, Object>? get nameErrors => nameControl.errors;
+  Map<String, dynamic>? get nameErrors => nameControl.errors;
 
   void get companyNameFocus => form.focus(companyNameControlPath());
 
@@ -1062,7 +1062,7 @@ class IdForm<P extends Product, C extends Cart>
   );
 
   @override
-  void updateInitial(Map<String, Object?>? value, String? path) {
+  void updateInitial(Map<String, dynamic>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -1090,7 +1090,7 @@ class IdForm<P extends Product, C extends Cart>
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, Object?>{};
+          current[key] = <String, dynamic>{};
         }
         current = current[key];
         continue;
@@ -1327,13 +1327,13 @@ class ReactiveProductDetailsFormFormGroupArrayBuilder<
        super(key: key);
 
   final ExtendedControl<
-    List<Map<String, Object?>?>,
+    List<Map<String, dynamic>?>,
     List<ReactiveProductDetailsFormFormGroupArrayBuilderT>
   >?
   extended;
 
   final ExtendedControl<
-    List<Map<String, Object?>?>,
+    List<Map<String, dynamic>?>,
     List<ReactiveProductDetailsFormFormGroupArrayBuilderT>
   >
   Function(ProductDetailsForm<P, C> formModel)?
@@ -1364,7 +1364,7 @@ class ReactiveProductDetailsFormFormGroupArrayBuilder<
 
     final value = (extended ?? getExtended?.call(formModel))!;
 
-    return StreamBuilder<List<Map<String, Object?>?>?>(
+    return StreamBuilder<List<Map<String, dynamic>?>?>(
       stream: value.control.valueChanges,
       builder: (context, snapshot) {
         final itemList =
@@ -1429,7 +1429,7 @@ class ReactiveIdForm<P extends Product, C extends Cart>
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -1438,7 +1438,7 @@ class ReactiveIdForm<P extends Product, C extends Cart>
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
 
   static IdForm<P, C>? of<P extends Product, C extends Cart>(
     BuildContext context, {
@@ -1466,7 +1466,7 @@ class ReactiveIdForm<P extends Product, C extends Cart>
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -1487,7 +1487,7 @@ class IdFormBuilder<P extends Product, C extends Cart> extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -1498,7 +1498,7 @@ class IdFormBuilder<P extends Product, C extends Cart> extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -1586,11 +1586,11 @@ class _IdFormBuilderState<P extends Product, C extends Cart>
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -1773,13 +1773,13 @@ class ReactiveIdFormFormGroupArrayBuilder<
        super(key: key);
 
   final ExtendedControl<
-    List<Map<String, Object?>?>,
+    List<Map<String, dynamic>?>,
     List<ReactiveIdFormFormGroupArrayBuilderT>
   >?
   extended;
 
   final ExtendedControl<
-    List<Map<String, Object?>?>,
+    List<Map<String, dynamic>?>,
     List<ReactiveIdFormFormGroupArrayBuilderT>
   >
   Function(IdForm<P, C> formModel)?
@@ -1810,7 +1810,7 @@ class ReactiveIdFormFormGroupArrayBuilder<
 
     final value = (extended ?? getExtended?.call(formModel))!;
 
-    return StreamBuilder<List<Map<String, Object?>?>?>(
+    return StreamBuilder<List<Map<String, dynamic>?>?>(
       stream: value.control.valueChanges,
       builder: (context, snapshot) {
         final itemList =

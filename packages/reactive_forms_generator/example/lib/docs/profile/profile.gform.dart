@@ -53,7 +53,7 @@ class ReactiveProfileForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -62,7 +62,7 @@ class ReactiveProfileForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
 
   static ProfileForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -87,7 +87,7 @@ class ReactiveProfileForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -106,7 +106,7 @@ class ProfileFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -117,7 +117,7 @@ class ProfileFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -204,11 +204,11 @@ class _ProfileFormBuilderState extends State<ProfileFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -252,7 +252,7 @@ class ProfileForm implements FormModel<Profile, Profile> {
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, Object?> initial;
+  final Map<String, dynamic> initial;
 
   String idControlPath() => pathBuilder(idControlName);
 
@@ -413,28 +413,28 @@ class ProfileForm implements FormModel<Profile, Profile> {
     }
   }
 
-  Map<String, Object> get idErrors => idControl.errors;
+  Map<String, dynamic> get idErrors => idControl.errors;
 
-  Map<String, Object> get anotherIdErrors => anotherIdControl.errors;
+  Map<String, dynamic> get anotherIdErrors => anotherIdControl.errors;
 
-  Map<String, Object> get nameErrors => nameControl.errors;
+  Map<String, dynamic> get nameErrors => nameControl.errors;
 
-  Map<String, Object> get chartingOrderErrors => chartingOrderControl.errors;
+  Map<String, dynamic> get chartingOrderErrors => chartingOrderControl.errors;
 
-  Map<String, Object> get numberingStandardErrors =>
+  Map<String, dynamic> get numberingStandardErrors =>
       numberingStandardControl.errors;
 
-  Map<String, Object> get measurementTypeErrors =>
+  Map<String, dynamic> get measurementTypeErrors =>
       measurementTypeControl.errors;
 
-  Map<String, Object> get audioGuidanceErrors => audioGuidanceControl.errors;
+  Map<String, dynamic> get audioGuidanceErrors => audioGuidanceControl.errors;
 
-  Map<String, Object> get incidenceFilterErrors =>
+  Map<String, dynamic> get incidenceFilterErrors =>
       incidenceFilterControl.errors;
 
-  Map<String, Object> get thresholdErrors => thresholdControl.errors;
+  Map<String, dynamic> get thresholdErrors => thresholdControl.errors;
 
-  Map<String, Object> get timerErrors => timerControl.errors;
+  Map<String, dynamic> get timerErrors => timerControl.errors;
 
   void get idFocus => form.focus(idControlPath());
 
@@ -1195,7 +1195,7 @@ class ProfileForm implements FormModel<Profile, Profile> {
   );
 
   @override
-  void updateInitial(Map<String, Object?>? value, String? path) {
+  void updateInitial(Map<String, dynamic>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -1223,7 +1223,7 @@ class ProfileForm implements FormModel<Profile, Profile> {
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, Object?>{};
+          current[key] = <String, dynamic>{};
         }
         current = current[key];
         continue;
@@ -1348,7 +1348,7 @@ class IncidenceFilterForm
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, Object?> initial;
+  final Map<String, dynamic> initial;
 
   String isMobilityEnabledControlPath() =>
       pathBuilder(isMobilityEnabledControlName);
@@ -1449,22 +1449,22 @@ class IncidenceFilterForm
     }
   }
 
-  Map<String, Object> get isMobilityEnabledErrors =>
+  Map<String, dynamic> get isMobilityEnabledErrors =>
       isMobilityEnabledControl.errors;
 
-  Map<String, Object> get isFurcationEnabledErrors =>
+  Map<String, dynamic> get isFurcationEnabledErrors =>
       isFurcationEnabledControl.errors;
 
-  Map<String, Object> get isBleedingEnabledErrors =>
+  Map<String, dynamic> get isBleedingEnabledErrors =>
       isBleedingEnabledControl.errors;
 
-  Map<String, Object> get isSuppurationEnabledErrors =>
+  Map<String, dynamic> get isSuppurationEnabledErrors =>
       isSuppurationEnabledControl.errors;
 
-  Map<String, Object> get isCalculusEnabledErrors =>
+  Map<String, dynamic> get isCalculusEnabledErrors =>
       isCalculusEnabledControl.errors;
 
-  Map<String, Object> get isPlaqueEnabledErrors =>
+  Map<String, dynamic> get isPlaqueEnabledErrors =>
       isPlaqueEnabledControl.errors;
 
   void get isMobilityEnabledFocus => form.focus(isMobilityEnabledControlPath());
@@ -1965,7 +1965,7 @@ class IncidenceFilterForm
   );
 
   @override
-  void updateInitial(Map<String, Object?>? value, String? path) {
+  void updateInitial(Map<String, dynamic>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -1993,7 +1993,7 @@ class IncidenceFilterForm
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, Object?>{};
+          current[key] = <String, dynamic>{};
         }
         current = current[key];
         continue;
@@ -2095,7 +2095,7 @@ class ThresholdSettingForm
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, Object?> initial;
+  final Map<String, dynamic> initial;
 
   String isEnabledControlPath() => pathBuilder(isEnabledControlName);
 
@@ -2127,9 +2127,9 @@ class ThresholdSettingForm
     }
   }
 
-  Map<String, Object> get isEnabledErrors => isEnabledControl.errors;
+  Map<String, dynamic> get isEnabledErrors => isEnabledControl.errors;
 
-  Map<String, Object> get valueErrors => valueControl.errors;
+  Map<String, dynamic> get valueErrors => valueControl.errors;
 
   void get isEnabledFocus => form.focus(isEnabledControlPath());
 
@@ -2372,7 +2372,7 @@ class ThresholdSettingForm
   );
 
   @override
-  void updateInitial(Map<String, Object?>? value, String? path) {
+  void updateInitial(Map<String, dynamic>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -2400,7 +2400,7 @@ class ThresholdSettingForm
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, Object?>{};
+          current[key] = <String, dynamic>{};
         }
         current = current[key];
         continue;
@@ -2470,7 +2470,7 @@ class TimerSettingForm implements FormModel<TimerSetting, TimerSetting> {
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, Object?> initial;
+  final Map<String, dynamic> initial;
 
   String isEnabledControlPath() => pathBuilder(isEnabledControlName);
 
@@ -2502,9 +2502,9 @@ class TimerSettingForm implements FormModel<TimerSetting, TimerSetting> {
     }
   }
 
-  Map<String, Object> get isEnabledErrors => isEnabledControl.errors;
+  Map<String, dynamic> get isEnabledErrors => isEnabledControl.errors;
 
-  Map<String, Object> get valueErrors => valueControl.errors;
+  Map<String, dynamic> get valueErrors => valueControl.errors;
 
   void get isEnabledFocus => form.focus(isEnabledControlPath());
 
@@ -2744,7 +2744,7 @@ class TimerSettingForm implements FormModel<TimerSetting, TimerSetting> {
   );
 
   @override
-  void updateInitial(Map<String, Object?>? value, String? path) {
+  void updateInitial(Map<String, dynamic>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -2772,7 +2772,7 @@ class TimerSettingForm implements FormModel<TimerSetting, TimerSetting> {
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, Object?>{};
+          current[key] = <String, dynamic>{};
         }
         current = current[key];
         continue;
@@ -2985,13 +2985,13 @@ class ReactiveProfileFormFormGroupArrayBuilder<
        super(key: key);
 
   final ExtendedControl<
-    List<Map<String, Object?>?>,
+    List<Map<String, dynamic>?>,
     List<ReactiveProfileFormFormGroupArrayBuilderT>
   >?
   extended;
 
   final ExtendedControl<
-    List<Map<String, Object?>?>,
+    List<Map<String, dynamic>?>,
     List<ReactiveProfileFormFormGroupArrayBuilderT>
   >
   Function(ProfileForm formModel)?
@@ -3022,7 +3022,7 @@ class ReactiveProfileFormFormGroupArrayBuilder<
 
     final value = (extended ?? getExtended?.call(formModel))!;
 
-    return StreamBuilder<List<Map<String, Object?>?>?>(
+    return StreamBuilder<List<Map<String, dynamic>?>?>(
       stream: value.control.valueChanges,
       builder: (context, snapshot) {
         final itemList =

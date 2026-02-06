@@ -43,7 +43,7 @@ class ControlPrivateMethod extends ReactiveFormGeneratorMethod {
 
     if (field.isFormGroupArray) {
       typeReference =
-          'FormArray<Map<String, Object?>>${field.nullabilitySuffix}';
+          'FormArray<Map<String, dynamic>>${field.nullabilitySuffix}';
     }
 
     String body = 'form.control(${field.fieldControlPath}()) as $typeReference';

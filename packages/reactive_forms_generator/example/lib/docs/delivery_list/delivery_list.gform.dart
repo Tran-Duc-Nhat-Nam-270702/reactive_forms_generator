@@ -53,7 +53,7 @@ class ReactiveDeliveryListForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -62,7 +62,7 @@ class ReactiveDeliveryListForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
 
   static DeliveryListForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -89,7 +89,7 @@ class ReactiveDeliveryListForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -110,7 +110,7 @@ class DeliveryListFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -121,7 +121,7 @@ class DeliveryListFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -210,11 +210,11 @@ class _DeliveryListFormBuilderState extends State<DeliveryListFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -243,7 +243,7 @@ class DeliveryListForm implements FormModel<DeliveryList, DeliveryList> {
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, Object?> initial;
+  final Map<String, dynamic> initial;
 
   String deliveryListControlPath() => pathBuilder(deliveryListControlName);
 
@@ -281,9 +281,9 @@ class DeliveryListForm implements FormModel<DeliveryList, DeliveryList> {
     }
   }
 
-  Map<String, Object> get deliveryListErrors => deliveryListControl.errors;
+  Map<String, dynamic> get deliveryListErrors => deliveryListControl.errors;
 
-  Map<String, Object>? get clientListErrors => clientListControl.errors;
+  Map<String, dynamic> get clientListErrors => clientListControl.errors;
 
   void get deliveryListFocus => form.focus(deliveryListControlPath());
 
@@ -522,12 +522,12 @@ class DeliveryListForm implements FormModel<DeliveryList, DeliveryList> {
     emitEvent: emitEvent,
   );
 
-  FormArray<Map<String, Object?>> get deliveryListControl =>
+  FormArray<Map<String, dynamic>> get deliveryListControl =>
       form.control(deliveryListControlPath())
-          as FormArray<Map<String, Object?>>;
+          as FormArray<Map<String, dynamic>>;
 
-  FormArray<Map<String, Object?>> get clientListControl =>
-      form.control(clientListControlPath()) as FormArray<Map<String, Object?>>;
+  FormArray<Map<String, dynamic>> get clientListControl =>
+      form.control(clientListControlPath()) as FormArray<Map<String, dynamic>>;
 
   List<DeliveryPointForm> get deliveryListDeliveryPointForm {
     final values = deliveryListControl.controls.map((e) => e.value).toList();
@@ -599,19 +599,19 @@ class DeliveryListForm implements FormModel<DeliveryList, DeliveryList> {
     }
   }
 
-  ExtendedControl<List<Map<String, Object?>?>, List<DeliveryPointForm>>
+  ExtendedControl<List<Map<String, dynamic>?>, List<DeliveryPointForm>>
   get deliveryListExtendedControl =>
-      ExtendedControl<List<Map<String, Object?>?>, List<DeliveryPointForm>>(
+      ExtendedControl<List<Map<String, dynamic>?>, List<DeliveryPointForm>>(
         form.control(deliveryListControlPath())
-            as FormArray<Map<String, Object?>>,
+            as FormArray<Map<String, dynamic>>,
         () => deliveryListDeliveryPointForm,
       );
 
-  ExtendedControl<List<Map<String, Object?>?>, List<ClientForm>>
+  ExtendedControl<List<Map<String, dynamic>?>, List<ClientForm>>
   get clientListExtendedControl =>
-      ExtendedControl<List<Map<String, Object?>?>, List<ClientForm>>(
+      ExtendedControl<List<Map<String, dynamic>?>, List<ClientForm>>(
         form.control(clientListControlPath())
-            as FormArray<Map<String, Object?>>,
+            as FormArray<Map<String, dynamic>>,
         () => clientListClientForm,
       );
 
@@ -771,7 +771,7 @@ class DeliveryListForm implements FormModel<DeliveryList, DeliveryList> {
   );
 
   @override
-  void updateInitial(Map<String, Object?>? value, String? path) {
+  void updateInitial(Map<String, dynamic>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -799,7 +799,7 @@ class DeliveryListForm implements FormModel<DeliveryList, DeliveryList> {
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, Object?>{};
+          current[key] = <String, dynamic>{};
         }
         current = current[key];
         continue;
@@ -870,7 +870,7 @@ class DeliveryPointForm implements FormModel<DeliveryPoint, DeliveryPoint> {
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, Object?> initial;
+  final Map<String, dynamic> initial;
 
   String nameControlPath() => pathBuilder(nameControlName);
 
@@ -903,9 +903,9 @@ class DeliveryPointForm implements FormModel<DeliveryPoint, DeliveryPoint> {
     }
   }
 
-  Map<String, Object> get nameErrors => nameControl.errors;
+  Map<String, dynamic> get nameErrors => nameControl.errors;
 
-  Map<String, Object>? get addressErrors => addressControl.errors;
+  Map<String, dynamic> get addressErrors => addressControl.errors;
 
   void get nameFocus => form.focus(nameControlPath());
 
@@ -1171,7 +1171,7 @@ class DeliveryPointForm implements FormModel<DeliveryPoint, DeliveryPoint> {
   );
 
   @override
-  void updateInitial(Map<String, Object?>? value, String? path) {
+  void updateInitial(Map<String, dynamic>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -1199,7 +1199,7 @@ class DeliveryPointForm implements FormModel<DeliveryPoint, DeliveryPoint> {
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, Object?>{};
+          current[key] = <String, dynamic>{};
         }
         current = current[key];
         continue;
@@ -1260,7 +1260,7 @@ class AddressForm implements FormModel<Address, Address> {
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, Object?> initial;
+  final Map<String, dynamic> initial;
 
   String streetControlPath() => pathBuilder(streetControlName);
 
@@ -1292,9 +1292,9 @@ class AddressForm implements FormModel<Address, Address> {
     }
   }
 
-  Map<String, Object>? get streetErrors => streetControl.errors;
+  Map<String, dynamic> get streetErrors => streetControl.errors;
 
-  Map<String, Object>? get cityErrors => cityControl.errors;
+  Map<String, dynamic>? get cityErrors => cityControl.errors;
 
   void get streetFocus => form.focus(streetControlPath());
 
@@ -1580,7 +1580,7 @@ class AddressForm implements FormModel<Address, Address> {
   );
 
   @override
-  void updateInitial(Map<String, Object?>? value, String? path) {
+  void updateInitial(Map<String, dynamic>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -1608,7 +1608,7 @@ class AddressForm implements FormModel<Address, Address> {
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, Object?>{};
+          current[key] = <String, dynamic>{};
         }
         current = current[key];
         continue;
@@ -1678,7 +1678,7 @@ class ClientForm implements FormModel<Client, Client> {
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, Object?> initial;
+  final Map<String, dynamic> initial;
 
   String clientTypeControlPath() => pathBuilder(clientTypeControlName);
 
@@ -1725,11 +1725,11 @@ class ClientForm implements FormModel<Client, Client> {
     }
   }
 
-  Map<String, Object> get clientTypeErrors => clientTypeControl.errors;
+  Map<String, dynamic> get clientTypeErrors => clientTypeControl.errors;
 
-  Map<String, Object>? get nameErrors => nameControl.errors;
+  Map<String, dynamic>? get nameErrors => nameControl.errors;
 
-  Map<String, Object>? get notesErrors => notesControl.errors;
+  Map<String, dynamic>? get notesErrors => notesControl.errors;
 
   void get clientTypeFocus => form.focus(clientTypeControlPath());
 
@@ -2084,7 +2084,7 @@ class ClientForm implements FormModel<Client, Client> {
   );
 
   @override
-  void updateInitial(Map<String, Object?>? value, String? path) {
+  void updateInitial(Map<String, dynamic>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -2112,7 +2112,7 @@ class ClientForm implements FormModel<Client, Client> {
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, Object?>{};
+          current[key] = <String, dynamic>{};
         }
         current = current[key];
         continue;
@@ -2341,13 +2341,13 @@ class ReactiveDeliveryListFormFormGroupArrayBuilder<
        super(key: key);
 
   final ExtendedControl<
-    List<Map<String, Object?>?>,
+    List<Map<String, dynamic>?>,
     List<ReactiveDeliveryListFormFormGroupArrayBuilderT>
   >?
   extended;
 
   final ExtendedControl<
-    List<Map<String, Object?>?>,
+    List<Map<String, dynamic>?>,
     List<ReactiveDeliveryListFormFormGroupArrayBuilderT>
   >
   Function(DeliveryListForm formModel)?
@@ -2378,7 +2378,7 @@ class ReactiveDeliveryListFormFormGroupArrayBuilder<
 
     final value = (extended ?? getExtended?.call(formModel))!;
 
-    return StreamBuilder<List<Map<String, Object?>?>?>(
+    return StreamBuilder<List<Map<String, dynamic>?>?>(
       stream: value.control.valueChanges,
       builder: (context, snapshot) {
         final itemList =
@@ -2444,7 +2444,7 @@ class ReactiveStandaloneDeliveryPointForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -2453,7 +2453,7 @@ class ReactiveStandaloneDeliveryPointForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
 
   static StandaloneDeliveryPointForm? of(
     BuildContext context, {
@@ -2483,7 +2483,7 @@ class ReactiveStandaloneDeliveryPointForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -2504,7 +2504,7 @@ class StandaloneDeliveryPointFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -2515,7 +2515,7 @@ class StandaloneDeliveryPointFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -2610,11 +2610,11 @@ class _StandaloneDeliveryPointFormBuilderState
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -2646,7 +2646,7 @@ class StandaloneDeliveryPointForm
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, Object?> initial;
+  final Map<String, dynamic> initial;
 
   String nameControlPath() => pathBuilder(nameControlName);
 
@@ -2679,9 +2679,9 @@ class StandaloneDeliveryPointForm
     }
   }
 
-  Map<String, Object> get nameErrors => nameControl.errors;
+  Map<String, dynamic> get nameErrors => nameControl.errors;
 
-  Map<String, Object>? get addressErrors => addressControl.errors;
+  Map<String, dynamic>? get addressErrors => addressControl.errors;
 
   void get nameFocus => form.focus(nameControlPath());
 
@@ -2947,7 +2947,7 @@ class StandaloneDeliveryPointForm
   );
 
   @override
-  void updateInitial(Map<String, Object?>? value, String? path) {
+  void updateInitial(Map<String, dynamic>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -2975,7 +2975,7 @@ class StandaloneDeliveryPointForm
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, Object?>{};
+          current[key] = <String, dynamic>{};
         }
         current = current[key];
         continue;
@@ -3199,13 +3199,13 @@ class ReactiveStandaloneDeliveryPointFormFormGroupArrayBuilder<
        super(key: key);
 
   final ExtendedControl<
-    List<Map<String, Object?>?>,
+    List<Map<String, dynamic>?>,
     List<ReactiveStandaloneDeliveryPointFormFormGroupArrayBuilderT>
   >?
   extended;
 
   final ExtendedControl<
-    List<Map<String, Object?>?>,
+    List<Map<String, dynamic>?>,
     List<ReactiveStandaloneDeliveryPointFormFormGroupArrayBuilderT>
   >
   Function(StandaloneDeliveryPointForm formModel)?
@@ -3236,7 +3236,7 @@ class ReactiveStandaloneDeliveryPointFormFormGroupArrayBuilder<
 
     final value = (extended ?? getExtended?.call(formModel))!;
 
-    return StreamBuilder<List<Map<String, Object?>?>?>(
+    return StreamBuilder<List<Map<String, dynamic>?>?>(
       stream: value.control.valueChanges,
       builder: (context, snapshot) {
         final itemList =

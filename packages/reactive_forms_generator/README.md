@@ -73,7 +73,7 @@ Here is how typical `reactive_forms` form looks like
 ```dart
 /// form instantiation
 FormGroup buildForm() =>
-    fb.group(<String, Object>{
+    fb.group(<String, dynamic>{
       'email': FormControl<String>(
         validators: [Validators.required, Validators.email],
       ),
@@ -130,7 +130,7 @@ final form = ReactiveFormBuilder(
    `ReactiveCheckbox` field. **Isn't it better to let the code generation to do it for you?**
 
 
-2. Second issue is output which is always `Map<String, Object>`. It is ok for languages like JS. But for the typed
+2. Second issue is output which is always `Map<String, dynamic>`. It is ok for languages like JS. But for the typed
    language
    you would prefer to get the output fom the form like model. And avoid manual type casting like this one.
 
@@ -868,7 +868,7 @@ final form = DeliveryListFormBuilder(
         Row(
           children: [
             Expanded(
-              child: ReactiveFormArray<Map<String, Object?>>(
+              child: ReactiveFormArray<Map<String, dynamic>>(
                 formArray: formModel.deliveryListControl,
                 builder: (context, formArray, child) {
                   return Column(
