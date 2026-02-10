@@ -53,7 +53,7 @@ class ReactiveLoginExtendedOForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvokedWithResult,
+    this.onPopInvoked,
   }) : super(key: key);
 
   final Widget child;
@@ -62,7 +62,7 @@ class ReactiveLoginExtendedOForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
+  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
 
   static LoginExtendedOForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -89,7 +89,7 @@ class ReactiveLoginExtendedOForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvokedWithResult: onPopInvokedWithResult,
+        onPopInvoked: onPopInvoked,
         child: child,
       ),
     );
@@ -110,7 +110,7 @@ class LoginExtendedOFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvokedWithResult,
+    this.onPopInvoked,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -121,7 +121,7 @@ class LoginExtendedOFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
+  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
 
   final Widget Function(
     BuildContext context,
@@ -210,11 +210,11 @@ class _LoginExtendedOFormBuilderState extends State<LoginExtendedOFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
+      // onPopInvoked: widget.onPopInvoked,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvokedWithResult: widget.onPopInvokedWithResult,
+        onPopInvoked: widget.onPopInvoked,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -260,7 +260,7 @@ class LoginExtendedOForm
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, dynamic> initial;
+  final Map<String, Object?> initial;
 
   String emailControlPath() => pathBuilder(emailControlName);
 
@@ -414,25 +414,25 @@ class LoginExtendedOForm
     }
   }
 
-  Map<String, dynamic>? get emailErrors => emailControl.errors;
+  Map<String, Object>? get emailErrors => emailControl.errors;
 
-  Map<String, dynamic> get email2Errors => email2Control.errors;
+  Map<String, Object> get email2Errors => email2Control.errors;
 
-  Map<String, dynamic> get passwordErrors => passwordControl.errors;
+  Map<String, Object> get passwordErrors => passwordControl.errors;
 
-  Map<String, dynamic> get rememberMeErrors => rememberMeControl.errors;
+  Map<String, Object> get rememberMeErrors => rememberMeControl.errors;
 
-  Map<String, dynamic> get themeErrors => themeControl.errors;
+  Map<String, Object> get themeErrors => themeControl.errors;
 
-  Map<String, dynamic> get modeErrors => modeControl.errors;
+  Map<String, Object> get modeErrors => modeControl.errors;
 
-  Map<String, dynamic> get timeoutErrors => timeoutControl.errors;
+  Map<String, Object> get timeoutErrors => timeoutControl.errors;
 
-  Map<String, dynamic> get heightErrors => heightControl.errors;
+  Map<String, Object> get heightErrors => heightControl.errors;
 
-  Map<String, dynamic>? get unAnnotatedErrors => unAnnotatedControl.errors;
+  Map<String, Object>? get unAnnotatedErrors => unAnnotatedControl.errors;
 
-  Map<String, dynamic> get someIntListErrors => someIntListControl.errors;
+  Map<String, Object> get someIntListErrors => someIntListControl.errors;
 
   void get emailFocus => form.focus(emailControlPath());
 
@@ -1229,7 +1229,7 @@ class LoginExtendedOForm
   );
 
   @override
-  void updateInitial(Map<String, dynamic>? value, String? path) {
+  void updateInitial(Map<String, Object?>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -1257,7 +1257,7 @@ class LoginExtendedOForm
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, dynamic>{};
+          current[key] = <String, Object?>{};
         }
         current = current[key];
         continue;
@@ -1585,13 +1585,13 @@ class ReactiveLoginExtendedOFormFormGroupArrayBuilder<
        super(key: key);
 
   final ExtendedControl<
-    List<Map<String, dynamic>?>,
+    List<Map<String, Object?>?>,
     List<ReactiveLoginExtendedOFormFormGroupArrayBuilderT>
   >?
   extended;
 
   final ExtendedControl<
-    List<Map<String, dynamic>?>,
+    List<Map<String, Object?>?>,
     List<ReactiveLoginExtendedOFormFormGroupArrayBuilderT>
   >
   Function(LoginExtendedOForm formModel)?
@@ -1622,7 +1622,7 @@ class ReactiveLoginExtendedOFormFormGroupArrayBuilder<
 
     final value = (extended ?? getExtended?.call(formModel))!;
 
-    return StreamBuilder<List<Map<String, dynamic>?>?>(
+    return StreamBuilder<List<Map<String, Object?>?>?>(
       stream: value.control.valueChanges,
       builder: (context, snapshot) {
         final itemList =

@@ -106,7 +106,7 @@ class ReactiveArrayNullableOForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvokedWithResult,
+    this.onPopInvoked,
   }) : super(key: key);
 
   final Widget child;
@@ -115,7 +115,7 @@ class ReactiveArrayNullableOForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
+  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
 
   static ArrayNullableOForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -142,7 +142,7 @@ class ReactiveArrayNullableOForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvokedWithResult: onPopInvokedWithResult,
+        onPopInvoked: onPopInvoked,
         child: child,
       ),
     );
@@ -163,7 +163,7 @@ class ArrayNullableOFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvokedWithResult,
+    this.onPopInvoked,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -174,7 +174,7 @@ class ArrayNullableOFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
+  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
 
   final Widget Function(
     BuildContext context,
@@ -263,11 +263,11 @@ class _ArrayNullableOFormBuilderState extends State<ArrayNullableOFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
+      // onPopInvoked: widget.onPopInvoked,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvokedWithResult: widget.onPopInvokedWithResult,
+        onPopInvoked: widget.onPopInvoked,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -303,7 +303,7 @@ class ArrayNullableOForm
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, dynamic> initial;
+  final Map<String, Object?> initial;
 
   String someListControlPath() => pathBuilder(someListControlName);
 
@@ -394,15 +394,15 @@ class ArrayNullableOForm
     }
   }
 
-  Map<String, dynamic>? get someListErrors => someListControl.errors;
+  Map<String, Object>? get someListErrors => someListControl.errors;
 
-  Map<String, dynamic> get emailListErrors => emailListControl.errors;
+  Map<String, Object> get emailListErrors => emailListControl.errors;
 
-  Map<String, dynamic> get fruitListErrors => fruitListControl.errors;
+  Map<String, Object> get fruitListErrors => fruitListControl.errors;
 
-  Map<String, dynamic>? get vegetablesListErrors => vegetablesListControl.errors;
+  Map<String, Object>? get vegetablesListErrors => vegetablesListControl.errors;
 
-  Map<String, dynamic>? get modeListErrors => modeListControl.errors;
+  Map<String, Object>? get modeListErrors => modeListControl.errors;
 
   void get someListFocus => form.focus(someListControlPath());
 
@@ -1087,7 +1087,7 @@ class ArrayNullableOForm
   );
 
   @override
-  void updateInitial(Map<String, dynamic>? value, String? path) {
+  void updateInitial(Map<String, Object?>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -1115,7 +1115,7 @@ class ArrayNullableOForm
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, dynamic>{};
+          current[key] = <String, Object?>{};
         }
         current = current[key];
         continue;
@@ -1420,13 +1420,13 @@ class ReactiveArrayNullableOFormFormGroupArrayBuilder<
        super(key: key);
 
   final ExtendedControl<
-    List<Map<String, dynamic>?>,
+    List<Map<String, Object?>?>,
     List<ReactiveArrayNullableOFormFormGroupArrayBuilderT>
   >?
   extended;
 
   final ExtendedControl<
-    List<Map<String, dynamic>?>,
+    List<Map<String, Object?>?>,
     List<ReactiveArrayNullableOFormFormGroupArrayBuilderT>
   >
   Function(ArrayNullableOForm formModel)?
@@ -1457,7 +1457,7 @@ class ReactiveArrayNullableOFormFormGroupArrayBuilder<
 
     final value = (extended ?? getExtended?.call(formModel))!;
 
-    return StreamBuilder<List<Map<String, dynamic>?>?>(
+    return StreamBuilder<List<Map<String, Object?>?>?>(
       stream: value.control.valueChanges,
       builder: (context, snapshot) {
         final itemList =

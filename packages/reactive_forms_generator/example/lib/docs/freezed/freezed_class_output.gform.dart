@@ -53,7 +53,7 @@ class ReactiveFreezedClassOForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvokedWithResult,
+    this.onPopInvoked,
   }) : super(key: key);
 
   final Widget child;
@@ -62,7 +62,7 @@ class ReactiveFreezedClassOForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
+  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
 
   static FreezedClassOForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -89,7 +89,7 @@ class ReactiveFreezedClassOForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvokedWithResult: onPopInvokedWithResult,
+        onPopInvoked: onPopInvoked,
         child: child,
       ),
     );
@@ -110,7 +110,7 @@ class FreezedClassOFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvokedWithResult,
+    this.onPopInvoked,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -121,7 +121,7 @@ class FreezedClassOFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
+  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
 
   final Widget Function(
     BuildContext context,
@@ -210,11 +210,11 @@ class _FreezedClassOFormBuilderState extends State<FreezedClassOFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
+      // onPopInvoked: widget.onPopInvoked,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvokedWithResult: widget.onPopInvokedWithResult,
+        onPopInvoked: widget.onPopInvoked,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -258,7 +258,7 @@ class FreezedClassOForm
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, dynamic> initial;
+  final Map<String, Object?> initial;
 
   String genderControlPath() => pathBuilder(genderControlName);
 
@@ -397,23 +397,23 @@ class FreezedClassOForm
     }
   }
 
-  Map<String, dynamic>? get genderErrors => genderControl.errors;
+  Map<String, Object>? get genderErrors => genderControl.errors;
 
-  Map<String, dynamic>? get genderRErrors => genderRControl.errors;
+  Map<String, Object>? get genderRErrors => genderRControl.errors;
 
-  Map<String, dynamic>? get idErrors => idControl.errors;
+  Map<String, Object>? get idErrors => idControl.errors;
 
-  Map<String, dynamic>? get idRErrors => idRControl.errors;
+  Map<String, Object>? get idRErrors => idRControl.errors;
 
-  Map<String, dynamic> get idR2Errors => idR2Control.errors;
+  Map<String, Object> get idR2Errors => idR2Control.errors;
 
-  Map<String, dynamic>? get nameErrors => nameControl.errors;
+  Map<String, Object>? get nameErrors => nameControl.errors;
 
-  Map<String, dynamic>? get logoImageErrors => logoImageControl.errors;
+  Map<String, Object>? get logoImageErrors => logoImageControl.errors;
 
-  Map<String, dynamic>? get yearErrors => yearControl.errors;
+  Map<String, Object>? get yearErrors => yearControl.errors;
 
-  Map<String, dynamic> get selectedSpacesErrors => selectedSpacesControl.errors;
+  Map<String, Object> get selectedSpacesErrors => selectedSpacesControl.errors;
 
   void get genderFocus => form.focus(genderControlPath());
 
@@ -1259,7 +1259,7 @@ class FreezedClassOForm
   );
 
   @override
-  void updateInitial(Map<String, dynamic>? value, String? path) {
+  void updateInitial(Map<String, Object?>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -1287,7 +1287,7 @@ class FreezedClassOForm
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, dynamic>{};
+          current[key] = <String, Object?>{};
         }
         current = current[key];
         continue;
@@ -1584,13 +1584,13 @@ class ReactiveFreezedClassOFormFormGroupArrayBuilder<
        super(key: key);
 
   final ExtendedControl<
-    List<Map<String, dynamic>?>,
+    List<Map<String, Object?>?>,
     List<ReactiveFreezedClassOFormFormGroupArrayBuilderT>
   >?
   extended;
 
   final ExtendedControl<
-    List<Map<String, dynamic>?>,
+    List<Map<String, Object?>?>,
     List<ReactiveFreezedClassOFormFormGroupArrayBuilderT>
   >
   Function(FreezedClassOForm formModel)?
@@ -1621,7 +1621,7 @@ class ReactiveFreezedClassOFormFormGroupArrayBuilder<
 
     final value = (extended ?? getExtended?.call(formModel))!;
 
-    return StreamBuilder<List<Map<String, dynamic>?>?>(
+    return StreamBuilder<List<Map<String, Object?>?>?>(
       stream: value.control.valueChanges,
       builder: (context, snapshot) {
         final itemList =

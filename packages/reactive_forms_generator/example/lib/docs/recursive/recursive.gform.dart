@@ -53,7 +53,7 @@ class ReactiveSecuredAreaForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvokedWithResult,
+    this.onPopInvoked,
   }) : super(key: key);
 
   final Widget child;
@@ -62,7 +62,7 @@ class ReactiveSecuredAreaForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
+  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
 
   static SecuredAreaForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -89,7 +89,7 @@ class ReactiveSecuredAreaForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvokedWithResult: onPopInvokedWithResult,
+        onPopInvoked: onPopInvoked,
         child: child,
       ),
     );
@@ -109,7 +109,7 @@ class SecuredAreaFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvokedWithResult,
+    this.onPopInvoked,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -120,7 +120,7 @@ class SecuredAreaFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
+  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
 
   final Widget Function(
     BuildContext context,
@@ -208,11 +208,11 @@ class _SecuredAreaFormBuilderState extends State<SecuredAreaFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
+      // onPopInvoked: widget.onPopInvoked,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvokedWithResult: widget.onPopInvokedWithResult,
+        onPopInvoked: widget.onPopInvoked,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -245,7 +245,7 @@ class SecuredAreaForm implements FormModel<SecuredArea, SecuredArea> {
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, dynamic> initial;
+  final Map<String, Object?> initial;
 
   String idControlPath() => pathBuilder(idControlName);
 
@@ -314,13 +314,13 @@ class SecuredAreaForm implements FormModel<SecuredArea, SecuredArea> {
     }
   }
 
-  Map<String, dynamic>? get idErrors => idControl.errors;
+  Map<String, Object>? get idErrors => idControl.errors;
 
-  Map<String, dynamic>? get securedAreaErrors => securedAreaControl.errors;
+  Map<String, Object>? get securedAreaErrors => securedAreaControl.errors;
 
-  Map<String, dynamic>? get parcelSystemErrors => parcelSystemControl.errors;
+  Map<String, Object>? get parcelSystemErrors => parcelSystemControl.errors;
 
-  Map<String, dynamic> get subSecuredAreasErrors =>
+  Map<String, Object> get subSecuredAreasErrors =>
       subSecuredAreasControl.errors;
 
   void get idFocus => form.focus(idControlPath());
@@ -627,9 +627,9 @@ class SecuredAreaForm implements FormModel<SecuredArea, SecuredArea> {
   FormGroup get parcelSystemControl =>
       form.control(parcelSystemControlPath()) as FormGroup;
 
-  FormArray<Map<String, dynamic>> get subSecuredAreasControl =>
+  FormArray<Map<String, Object?>> get subSecuredAreasControl =>
       form.control(subSecuredAreasControlPath())
-          as FormArray<Map<String, dynamic>>;
+          as FormArray<Map<String, Object?>>;
 
   SecuredAreaForm get securedAreaForm =>
       SecuredAreaForm(form, pathBuilder('securedArea'), _formModel ?? this);
@@ -725,11 +725,11 @@ class SecuredAreaForm implements FormModel<SecuredArea, SecuredArea> {
     }
   }
 
-  ExtendedControl<List<Map<String, dynamic>?>, List<SecuredAreaForm>>
+  ExtendedControl<List<Map<String, Object?>?>, List<SecuredAreaForm>>
   get subSecuredAreasExtendedControl =>
-      ExtendedControl<List<Map<String, dynamic>?>, List<SecuredAreaForm>>(
+      ExtendedControl<List<Map<String, Object?>?>, List<SecuredAreaForm>>(
         form.control(subSecuredAreasControlPath())
-            as FormArray<Map<String, dynamic>>,
+            as FormArray<Map<String, Object?>>,
         () => subSecuredAreasSecuredAreaForm,
       );
 
@@ -879,7 +879,7 @@ class SecuredAreaForm implements FormModel<SecuredArea, SecuredArea> {
   );
 
   @override
-  void updateInitial(Map<String, dynamic>? value, String? path) {
+  void updateInitial(Map<String, Object?>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -907,7 +907,7 @@ class SecuredAreaForm implements FormModel<SecuredArea, SecuredArea> {
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, dynamic>{};
+          current[key] = <String, Object?>{};
         }
         current = current[key];
         continue;
@@ -983,7 +983,7 @@ class ParcelSystemForm implements FormModel<ParcelSystem, ParcelSystem> {
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, dynamic> initial;
+  final Map<String, Object?> initial;
 
   String hasParcelSystemControlPath() =>
       pathBuilder(hasParcelSystemControlName);
@@ -1016,10 +1016,10 @@ class ParcelSystemForm implements FormModel<ParcelSystem, ParcelSystem> {
     }
   }
 
-  Map<String, dynamic> get hasParcelSystemErrors =>
+  Map<String, Object> get hasParcelSystemErrors =>
       hasParcelSystemControl.errors;
 
-  Map<String, dynamic> get dataErrors => dataControl.errors;
+  Map<String, Object> get dataErrors => dataControl.errors;
 
   void get hasParcelSystemFocus => form.focus(hasParcelSystemControlPath());
 
@@ -1267,7 +1267,7 @@ class ParcelSystemForm implements FormModel<ParcelSystem, ParcelSystem> {
   );
 
   @override
-  void updateInitial(Map<String, dynamic>? value, String? path) {
+  void updateInitial(Map<String, Object?>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -1295,7 +1295,7 @@ class ParcelSystemForm implements FormModel<ParcelSystem, ParcelSystem> {
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, dynamic>{};
+          current[key] = <String, Object?>{};
         }
         current = current[key];
         continue;
@@ -1356,7 +1356,7 @@ class ParcelSystemDataForm
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, dynamic> initial;
+  final Map<String, Object?> initial;
 
   String idControlPath() => pathBuilder(idControlName);
 
@@ -1373,7 +1373,7 @@ class ParcelSystemDataForm
     }
   }
 
-  Map<String, dynamic>? get idErrors => idControl.errors;
+  Map<String, Object>? get idErrors => idControl.errors;
 
   void get idFocus => form.focus(idControlPath());
 
@@ -1572,7 +1572,7 @@ class ParcelSystemDataForm
   );
 
   @override
-  void updateInitial(Map<String, dynamic>? value, String? path) {
+  void updateInitial(Map<String, Object?>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -1600,7 +1600,7 @@ class ParcelSystemDataForm
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, dynamic>{};
+          current[key] = <String, Object?>{};
         }
         current = current[key];
         continue;
@@ -1810,13 +1810,13 @@ class ReactiveSecuredAreaFormFormGroupArrayBuilder<
        super(key: key);
 
   final ExtendedControl<
-    List<Map<String, dynamic>?>,
+    List<Map<String, Object?>?>,
     List<ReactiveSecuredAreaFormFormGroupArrayBuilderT>
   >?
   extended;
 
   final ExtendedControl<
-    List<Map<String, dynamic>?>,
+    List<Map<String, Object?>?>,
     List<ReactiveSecuredAreaFormFormGroupArrayBuilderT>
   >
   Function(SecuredAreaForm formModel)?
@@ -1847,7 +1847,7 @@ class ReactiveSecuredAreaFormFormGroupArrayBuilder<
 
     final value = (extended ?? getExtended?.call(formModel))!;
 
-    return StreamBuilder<List<Map<String, dynamic>?>?>(
+    return StreamBuilder<List<Map<String, Object?>?>?>(
       stream: value.control.valueChanges,
       builder: (context, snapshot) {
         final itemList =

@@ -53,7 +53,7 @@ class ReactiveMSICreateForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvokedWithResult,
+    this.onPopInvoked,
   }) : super(key: key);
 
   final Widget child;
@@ -62,7 +62,7 @@ class ReactiveMSICreateForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
+  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
 
   static MSICreateForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -87,7 +87,7 @@ class ReactiveMSICreateForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvokedWithResult: onPopInvokedWithResult,
+        onPopInvoked: onPopInvoked,
         child: child,
       ),
     );
@@ -107,7 +107,7 @@ class MSICreateFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvokedWithResult,
+    this.onPopInvoked,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -118,7 +118,7 @@ class MSICreateFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
+  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
 
   final Widget Function(
     BuildContext context,
@@ -205,11 +205,11 @@ class _MSICreateFormBuilderState extends State<MSICreateFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
+      // onPopInvoked: widget.onPopInvoked,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvokedWithResult: widget.onPopInvokedWithResult,
+        onPopInvoked: widget.onPopInvoked,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -255,7 +255,7 @@ class MSICreateForm implements FormModel<MSICreate, MSICreateOutput> {
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, dynamic> initial;
+  final Map<String, Object?> initial;
 
   String idControlPath() => pathBuilder(idControlName);
 
@@ -416,26 +416,26 @@ class MSICreateForm implements FormModel<MSICreate, MSICreateOutput> {
     }
   }
 
-  Map<String, dynamic>? get idErrors => idControl.errors;
+  Map<String, Object>? get idErrors => idControl.errors;
 
-  Map<String, dynamic>? get businessNumberErrors => businessNumberControl.errors;
+  Map<String, Object>? get businessNumberErrors => businessNumberControl.errors;
 
-  Map<String, dynamic>? get fileIdsErrors => fileIdsControl.errors;
+  Map<String, Object>? get fileIdsErrors => fileIdsControl.errors;
 
-  Map<String, dynamic>? get nameErrors => nameControl.errors;
+  Map<String, Object>? get nameErrors => nameControl.errors;
 
-  Map<String, dynamic>? get emailErrors => emailControl.errors;
+  Map<String, Object>? get emailErrors => emailControl.errors;
 
-  Map<String, dynamic> get sameMailingAddressAsCompanyErrors =>
+  Map<String, Object> get sameMailingAddressAsCompanyErrors =>
       sameMailingAddressAsCompanyControl.errors;
 
-  Map<String, dynamic> get companyAddressErrors => companyAddressControl.errors;
+  Map<String, Object> get companyAddressErrors => companyAddressControl.errors;
 
-  Map<String, dynamic> get primaryContactErrors => primaryContactControl.errors;
+  Map<String, Object> get primaryContactErrors => primaryContactControl.errors;
 
-  Map<String, dynamic> get mailingAddressErrors => mailingAddressControl.errors;
+  Map<String, Object> get mailingAddressErrors => mailingAddressControl.errors;
 
-  Map<String, dynamic> get adminsErrors => adminsControl.errors;
+  Map<String, Object> get adminsErrors => adminsControl.errors;
 
   void get idFocus => form.focus(idControlPath());
 
@@ -1046,8 +1046,8 @@ class MSICreateForm implements FormModel<MSICreate, MSICreateOutput> {
   FormGroup get mailingAddressControl =>
       form.control(mailingAddressControlPath()) as FormGroup;
 
-  FormArray<Map<String, dynamic>> get adminsControl =>
-      form.control(adminsControlPath()) as FormArray<Map<String, dynamic>>;
+  FormArray<Map<String, Object?>> get adminsControl =>
+      form.control(adminsControlPath()) as FormArray<Map<String, Object?>>;
 
   AddressForm get companyAddressForm =>
       AddressForm(form, pathBuilder('companyAddress'), _formModel ?? this);
@@ -1258,15 +1258,15 @@ class MSICreateForm implements FormModel<MSICreate, MSICreateOutput> {
   }
 
   ExtendedControl<
-    List<Map<String, dynamic>?>,
+    List<Map<String, Object?>?>,
     List<AdminContactInformationForm>
   >
   get adminsExtendedControl =>
       ExtendedControl<
-        List<Map<String, dynamic>?>,
+        List<Map<String, Object?>?>,
         List<AdminContactInformationForm>
       >(
-        form.control(adminsControlPath()) as FormArray<Map<String, dynamic>>,
+        form.control(adminsControlPath()) as FormArray<Map<String, Object?>>,
         () => adminsAdminContactInformationForm,
       );
 
@@ -1431,7 +1431,7 @@ class MSICreateForm implements FormModel<MSICreate, MSICreateOutput> {
   );
 
   @override
-  void updateInitial(Map<String, dynamic>? value, String? path) {
+  void updateInitial(Map<String, Object?>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -1459,7 +1459,7 @@ class MSICreateForm implements FormModel<MSICreate, MSICreateOutput> {
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, dynamic>{};
+          current[key] = <String, Object?>{};
         }
         current = current[key];
         continue;
@@ -1581,7 +1581,7 @@ class AddressForm implements FormModel<Address, AddressOutput> {
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, dynamic> initial;
+  final Map<String, Object?> initial;
 
   String streetControlPath() => pathBuilder(streetControlName);
 
@@ -1645,14 +1645,14 @@ class AddressForm implements FormModel<Address, AddressOutput> {
     }
   }
 
-  Map<String, dynamic>? get streetErrors => streetControl.errors;
+  Map<String, Object>? get streetErrors => streetControl.errors;
 
-  Map<String, dynamic>? get cityErrors => cityControl.errors;
+  Map<String, Object>? get cityErrors => cityControl.errors;
 
-  Map<String, dynamic>? get stateOrProvinceErrors =>
+  Map<String, Object>? get stateOrProvinceErrors =>
       stateOrProvinceControl.errors;
 
-  Map<String, dynamic>? get zipCodeErrors => zipCodeControl.errors;
+  Map<String, Object>? get zipCodeErrors => zipCodeControl.errors;
 
   void get streetFocus => form.focus(streetControlPath());
 
@@ -2120,7 +2120,7 @@ class AddressForm implements FormModel<Address, AddressOutput> {
   );
 
   @override
-  void updateInitial(Map<String, dynamic>? value, String? path) {
+  void updateInitial(Map<String, Object?>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -2148,7 +2148,7 @@ class AddressForm implements FormModel<Address, AddressOutput> {
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, dynamic>{};
+          current[key] = <String, Object?>{};
         }
         current = current[key];
         continue;
@@ -2236,7 +2236,7 @@ class PrimaryContactForm
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, dynamic> initial;
+  final Map<String, Object?> initial;
 
   String fullNameControlPath() => pathBuilder(fullNameControlName);
 
@@ -2285,11 +2285,11 @@ class PrimaryContactForm
     }
   }
 
-  Map<String, dynamic>? get fullNameErrors => fullNameControl.errors;
+  Map<String, Object>? get fullNameErrors => fullNameControl.errors;
 
-  Map<String, dynamic>? get jobTitleErrors => jobTitleControl.errors;
+  Map<String, Object>? get jobTitleErrors => jobTitleControl.errors;
 
-  Map<String, dynamic>? get emailErrors => emailControl.errors;
+  Map<String, Object>? get emailErrors => emailControl.errors;
 
   void get fullNameFocus => form.focus(fullNameControlPath());
 
@@ -2668,7 +2668,7 @@ class PrimaryContactForm
   );
 
   @override
-  void updateInitial(Map<String, dynamic>? value, String? path) {
+  void updateInitial(Map<String, Object?>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -2696,7 +2696,7 @@ class PrimaryContactForm
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, dynamic>{};
+          current[key] = <String, Object?>{};
         }
         current = current[key];
         continue;
@@ -2779,7 +2779,7 @@ class AdminContactInformationForm
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, dynamic> initial;
+  final Map<String, Object?> initial;
 
   String firstNameControlPath() => pathBuilder(firstNameControlName);
 
@@ -2828,11 +2828,11 @@ class AdminContactInformationForm
     }
   }
 
-  Map<String, dynamic> get firstNameErrors => firstNameControl.errors;
+  Map<String, Object>? get firstNameErrors => firstNameControl.errors;
 
-  Map<String, dynamic> get lastNameErrors => lastNameControl.errors;
+  Map<String, Object>? get lastNameErrors => lastNameControl.errors;
 
-  Map<String, dynamic>? get emailErrors => emailControl.errors;
+  Map<String, Object>? get emailErrors => emailControl.errors;
 
   void get firstNameFocus => form.focus(firstNameControlPath());
 
@@ -3211,7 +3211,7 @@ class AdminContactInformationForm
   );
 
   @override
-  void updateInitial(Map<String, dynamic>? value, String? path) {
+  void updateInitial(Map<String, Object?>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -3239,7 +3239,7 @@ class AdminContactInformationForm
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, dynamic>{};
+          current[key] = <String, Object?>{};
         }
         current = current[key];
         continue;
@@ -3522,13 +3522,13 @@ class ReactiveMSICreateFormFormGroupArrayBuilder<
        super(key: key);
 
   final ExtendedControl<
-    List<Map<String, dynamic>?>,
+    List<Map<String, Object?>?>,
     List<ReactiveMSICreateFormFormGroupArrayBuilderT>
   >?
   extended;
 
   final ExtendedControl<
-    List<Map<String, dynamic>?>,
+    List<Map<String, Object?>?>,
     List<ReactiveMSICreateFormFormGroupArrayBuilderT>
   >
   Function(MSICreateForm formModel)?
@@ -3559,7 +3559,7 @@ class ReactiveMSICreateFormFormGroupArrayBuilder<
 
     final value = (extended ?? getExtended?.call(formModel))!;
 
-    return StreamBuilder<List<Map<String, dynamic>?>?>(
+    return StreamBuilder<List<Map<String, Object?>?>?>(
       stream: value.control.valueChanges,
       builder: (context, snapshot) {
         final itemList =

@@ -118,7 +118,7 @@ class ReactiveSubGroupOForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvokedWithResult,
+    this.onPopInvoked,
   }) : super(key: key);
 
   final Widget child;
@@ -127,7 +127,7 @@ class ReactiveSubGroupOForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
+  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
 
   static SubGroupOForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -152,7 +152,7 @@ class ReactiveSubGroupOForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvokedWithResult: onPopInvokedWithResult,
+        onPopInvoked: onPopInvoked,
         child: child,
       ),
     );
@@ -172,7 +172,7 @@ class SubGroupOFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvokedWithResult,
+    this.onPopInvoked,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -183,7 +183,7 @@ class SubGroupOFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
+  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
 
   final Widget Function(
     BuildContext context,
@@ -270,11 +270,11 @@ class _SubGroupOFormBuilderState extends State<SubGroupOFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
+      // onPopInvoked: widget.onPopInvoked,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvokedWithResult: widget.onPopInvokedWithResult,
+        onPopInvoked: widget.onPopInvoked,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -301,7 +301,7 @@ class SubGroupOForm implements FormModel<SubGroupO, SubGroupOOutput> {
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, dynamic> initial;
+  final Map<String, Object?> initial;
 
   String idControlPath() => pathBuilder(idControlName);
 
@@ -318,7 +318,7 @@ class SubGroupOForm implements FormModel<SubGroupO, SubGroupOOutput> {
     }
   }
 
-  Map<String, dynamic> get idErrors => idControl.errors;
+  Map<String, Object> get idErrors => idControl.errors;
 
   void get idFocus => form.focus(idControlPath());
 
@@ -495,7 +495,7 @@ class SubGroupOForm implements FormModel<SubGroupO, SubGroupOOutput> {
   );
 
   @override
-  void updateInitial(Map<String, dynamic>? value, String? path) {
+  void updateInitial(Map<String, Object?>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -523,7 +523,7 @@ class SubGroupOForm implements FormModel<SubGroupO, SubGroupOOutput> {
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, dynamic>{};
+          current[key] = <String, Object?>{};
         }
         current = current[key];
         continue;
@@ -761,13 +761,13 @@ class ReactiveSubGroupOFormFormGroupArrayBuilder<
        super(key: key);
 
   final ExtendedControl<
-    List<Map<String, dynamic>?>,
+    List<Map<String, Object?>?>,
     List<ReactiveSubGroupOFormFormGroupArrayBuilderT>
   >?
   extended;
 
   final ExtendedControl<
-    List<Map<String, dynamic>?>,
+    List<Map<String, Object?>?>,
     List<ReactiveSubGroupOFormFormGroupArrayBuilderT>
   >
   Function(SubGroupOForm formModel)?
@@ -798,7 +798,7 @@ class ReactiveSubGroupOFormFormGroupArrayBuilder<
 
     final value = (extended ?? getExtended?.call(formModel))!;
 
-    return StreamBuilder<List<Map<String, dynamic>?>?>(
+    return StreamBuilder<List<Map<String, Object?>?>?>(
       stream: value.control.valueChanges,
       builder: (context, snapshot) {
         final itemList =
@@ -862,7 +862,7 @@ class ReactiveGroupOForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvokedWithResult,
+    this.onPopInvoked,
   }) : super(key: key);
 
   final Widget child;
@@ -871,7 +871,7 @@ class ReactiveGroupOForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
+  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
 
   static GroupOForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -894,7 +894,7 @@ class ReactiveGroupOForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvokedWithResult: onPopInvokedWithResult,
+        onPopInvoked: onPopInvoked,
         child: child,
       ),
     );
@@ -913,7 +913,7 @@ class GroupOFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvokedWithResult,
+    this.onPopInvoked,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -924,7 +924,7 @@ class GroupOFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
+  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
 
   final Widget Function(
     BuildContext context,
@@ -1007,11 +1007,11 @@ class _GroupOFormBuilderState extends State<GroupOFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
+      // onPopInvoked: widget.onPopInvoked,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvokedWithResult: widget.onPopInvokedWithResult,
+        onPopInvoked: widget.onPopInvoked,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -1039,7 +1039,7 @@ class GroupOForm implements FormModel<GroupO, GroupOOutput> {
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, dynamic> initial;
+  final Map<String, Object?> initial;
 
   String idControlPath() => pathBuilder(idControlName);
 
@@ -1073,9 +1073,9 @@ class GroupOForm implements FormModel<GroupO, GroupOOutput> {
     }
   }
 
-  Map<String, dynamic> get idErrors => idControl.errors;
+  Map<String, Object> get idErrors => idControl.errors;
 
-  Map<String, dynamic> get subGroupListErrors => subGroupListControl.errors;
+  Map<String, Object> get subGroupListErrors => subGroupListControl.errors;
 
   void get idFocus => form.focus(idControlPath());
 
@@ -1225,9 +1225,9 @@ class GroupOForm implements FormModel<GroupO, GroupOOutput> {
   FormControl<String> get idControl =>
       form.control(idControlPath()) as FormControl<String>;
 
-  FormArray<Map<String, dynamic>> get subGroupListControl =>
+  FormArray<Map<String, Object?>> get subGroupListControl =>
       form.control(subGroupListControlPath())
-          as FormArray<Map<String, dynamic>>;
+          as FormArray<Map<String, Object?>>;
 
   List<SubGroupOForm> get subGroupListSubGroupOForm {
     final values = subGroupListControl.controls.map((e) => e.value).toList();
@@ -1281,11 +1281,11 @@ class GroupOForm implements FormModel<GroupO, GroupOOutput> {
     }
   }
 
-  ExtendedControl<List<Map<String, dynamic>?>, List<SubGroupOForm>>
+  ExtendedControl<List<Map<String, Object?>?>, List<SubGroupOForm>>
   get subGroupListExtendedControl =>
-      ExtendedControl<List<Map<String, dynamic>?>, List<SubGroupOForm>>(
+      ExtendedControl<List<Map<String, Object?>?>, List<SubGroupOForm>>(
         form.control(subGroupListControlPath())
-            as FormArray<Map<String, dynamic>>,
+            as FormArray<Map<String, Object?>>,
         () => subGroupListSubGroupOForm,
       );
 
@@ -1424,7 +1424,7 @@ class GroupOForm implements FormModel<GroupO, GroupOOutput> {
   );
 
   @override
-  void updateInitial(Map<String, dynamic>? value, String? path) {
+  void updateInitial(Map<String, Object?>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -1452,7 +1452,7 @@ class GroupOForm implements FormModel<GroupO, GroupOOutput> {
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, dynamic>{};
+          current[key] = <String, Object?>{};
         }
         current = current[key];
         continue;
@@ -1666,13 +1666,13 @@ class ReactiveGroupOFormFormGroupArrayBuilder<
        super(key: key);
 
   final ExtendedControl<
-    List<Map<String, dynamic>?>,
+    List<Map<String, Object?>?>,
     List<ReactiveGroupOFormFormGroupArrayBuilderT>
   >?
   extended;
 
   final ExtendedControl<
-    List<Map<String, dynamic>?>,
+    List<Map<String, Object?>?>,
     List<ReactiveGroupOFormFormGroupArrayBuilderT>
   >
   Function(GroupOForm formModel)?
@@ -1703,7 +1703,7 @@ class ReactiveGroupOFormFormGroupArrayBuilder<
 
     final value = (extended ?? getExtended?.call(formModel))!;
 
-    return StreamBuilder<List<Map<String, dynamic>?>?>(
+    return StreamBuilder<List<Map<String, Object?>?>?>(
       stream: value.control.valueChanges,
       builder: (context, snapshot) {
         final itemList =
@@ -1767,7 +1767,7 @@ class ReactiveNestedOForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvokedWithResult,
+    this.onPopInvoked,
   }) : super(key: key);
 
   final Widget child;
@@ -1776,7 +1776,7 @@ class ReactiveNestedOForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
+  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
 
   static NestedOForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -1801,7 +1801,7 @@ class ReactiveNestedOForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvokedWithResult: onPopInvokedWithResult,
+        onPopInvoked: onPopInvoked,
         child: child,
       ),
     );
@@ -1820,7 +1820,7 @@ class NestedOFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvokedWithResult,
+    this.onPopInvoked,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -1831,7 +1831,7 @@ class NestedOFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
+  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
 
   final Widget Function(
     BuildContext context,
@@ -1918,11 +1918,11 @@ class _NestedOFormBuilderState extends State<NestedOFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
+      // onPopInvoked: widget.onPopInvoked,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvokedWithResult: widget.onPopInvokedWithResult,
+        onPopInvoked: widget.onPopInvoked,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -1948,7 +1948,7 @@ class NestedOForm implements FormModel<NestedO, NestedOOutput> {
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, dynamic> initial;
+  final Map<String, Object?> initial;
 
   String groupListControlPath() => pathBuilder(groupListControlName);
 
@@ -1967,7 +1967,7 @@ class NestedOForm implements FormModel<NestedO, NestedOOutput> {
     }
   }
 
-  Map<String, dynamic> get groupListErrors => groupListControl.errors;
+  Map<String, Object> get groupListErrors => groupListControl.errors;
 
   void get groupListFocus => form.focus(groupListControlPath());
 
@@ -2074,8 +2074,8 @@ class NestedOForm implements FormModel<NestedO, NestedOOutput> {
     emitEvent: emitEvent,
   );
 
-  FormArray<Map<String, dynamic>> get groupListControl =>
-      form.control(groupListControlPath()) as FormArray<Map<String, dynamic>>;
+  FormArray<Map<String, Object?>> get groupListControl =>
+      form.control(groupListControlPath()) as FormArray<Map<String, Object?>>;
 
   List<GroupOForm> get groupListGroupOForm {
     final values = groupListControl.controls.map((e) => e.value).toList();
@@ -2110,10 +2110,10 @@ class NestedOForm implements FormModel<NestedO, NestedOOutput> {
     }
   }
 
-  ExtendedControl<List<Map<String, dynamic>?>, List<GroupOForm>>
+  ExtendedControl<List<Map<String, Object?>?>, List<GroupOForm>>
   get groupListExtendedControl =>
-      ExtendedControl<List<Map<String, dynamic>?>, List<GroupOForm>>(
-        form.control(groupListControlPath()) as FormArray<Map<String, dynamic>>,
+      ExtendedControl<List<Map<String, Object?>?>, List<GroupOForm>>(
+        form.control(groupListControlPath()) as FormArray<Map<String, Object?>>,
         () => groupListGroupOForm,
       );
 
@@ -2252,7 +2252,7 @@ class NestedOForm implements FormModel<NestedO, NestedOOutput> {
   );
 
   @override
-  void updateInitial(Map<String, dynamic>? value, String? path) {
+  void updateInitial(Map<String, Object?>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -2280,7 +2280,7 @@ class NestedOForm implements FormModel<NestedO, NestedOOutput> {
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, dynamic>{};
+          current[key] = <String, Object?>{};
         }
         current = current[key];
         continue;
@@ -2486,13 +2486,13 @@ class ReactiveNestedOFormFormGroupArrayBuilder<
        super(key: key);
 
   final ExtendedControl<
-    List<Map<String, dynamic>?>,
+    List<Map<String, Object?>?>,
     List<ReactiveNestedOFormFormGroupArrayBuilderT>
   >?
   extended;
 
   final ExtendedControl<
-    List<Map<String, dynamic>?>,
+    List<Map<String, Object?>?>,
     List<ReactiveNestedOFormFormGroupArrayBuilderT>
   >
   Function(NestedOForm formModel)?
@@ -2523,7 +2523,7 @@ class ReactiveNestedOFormFormGroupArrayBuilder<
 
     final value = (extended ?? getExtended?.call(formModel))!;
 
-    return StreamBuilder<List<Map<String, dynamic>?>?>(
+    return StreamBuilder<List<Map<String, Object?>?>?>(
       stream: value.control.valueChanges,
       builder: (context, snapshot) {
         final itemList =

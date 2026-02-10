@@ -23,7 +23,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
       title: const Text('Login'),
       body: LoginFormBuilder(
         canPop: (formGroup) => true,
-        onPopInvokedWithResult: (formGroup, didPop, result) => {},
+        onPopInvoked: (formGroup, didPop) => {},
         model: _emptyModel,
         builder: (context, formModel, child) {
           return Column(

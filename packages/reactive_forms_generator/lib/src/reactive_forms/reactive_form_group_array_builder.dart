@@ -74,7 +74,7 @@ class ReactiveFormGroupArrayBuilder {
             
             final value = (extended ?? getExtended?.call(formModel))!;
         
-            return StreamBuilder<List<Map<String, dynamic>?>?>(
+            return StreamBuilder<List<Map<String, Object?>?>?>(
               stream: value.control.valueChanges,
               builder: (context, snapshot) {
                 final itemList = (value.value() ?? <$T>[])
@@ -108,7 +108,7 @@ class ReactiveFormGroupArrayBuilder {
         ..name = 'extended'
         ..modifier = FieldModifier.final$
         ..type = Reference(
-          'ExtendedControl<List<Map<String, dynamic>?>, List<$T>>?',
+          'ExtendedControl<List<Map<String, Object?>?>, List<$T>>?',
         ),
     ),
     Field(
@@ -116,7 +116,7 @@ class ReactiveFormGroupArrayBuilder {
         ..name = 'getExtended'
         ..modifier = FieldModifier.final$
         ..type = Reference(
-          'ExtendedControl<List<Map<String, dynamic>?>, List<$T>> Function(${formGenerator.classNameFull} formModel)?',
+          'ExtendedControl<List<Map<String, Object?>?>, List<$T>> Function(${formGenerator.classNameFull} formModel)?',
         ),
     ),
     Field(
