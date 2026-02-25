@@ -53,7 +53,7 @@ class ReactiveUserProfileOForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvokedWithResult,
+    this.onPopInvoked,
   }) : super(key: key);
 
   final Widget child;
@@ -62,7 +62,7 @@ class ReactiveUserProfileOForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
+  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
 
   static UserProfileOForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -89,7 +89,7 @@ class ReactiveUserProfileOForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvokedWithResult: onPopInvokedWithResult,
+        onPopInvoked: onPopInvoked,
         child: child,
       ),
     );
@@ -110,7 +110,7 @@ class UserProfileOFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvokedWithResult,
+    this.onPopInvoked,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -121,7 +121,7 @@ class UserProfileOFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
+  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
 
   final Widget Function(
     BuildContext context,
@@ -210,11 +210,11 @@ class _UserProfileOFormBuilderState extends State<UserProfileOFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
+      // onPopInvoked: widget.onPopInvoked,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvokedWithResult: widget.onPopInvokedWithResult,
+        onPopInvoked: widget.onPopInvoked,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -249,7 +249,7 @@ class UserProfileOForm implements FormModel<UserProfileO, UserProfileOOutput> {
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, dynamic> initial;
+  final Map<String, Object?> initial;
 
   String idControlPath() => pathBuilder(idControlName);
 
@@ -328,15 +328,15 @@ class UserProfileOForm implements FormModel<UserProfileO, UserProfileOOutput> {
     }
   }
 
-  Map<String, dynamic> get idErrors => idControl.errors;
+  Map<String, Object> get idErrors => idControl.errors;
 
-  Map<String, dynamic>? get firstNameErrors => firstNameControl.errors;
+  Map<String, Object>? get firstNameErrors => firstNameControl.errors;
 
-  Map<String, dynamic>? get lastNameErrors => lastNameControl.errors;
+  Map<String, Object>? get lastNameErrors => lastNameControl.errors;
 
-  Map<String, dynamic> get homeErrors => homeControl.errors;
+  Map<String, Object> get homeErrors => homeControl.errors;
 
-  Map<String, dynamic>? get officeErrors => officeControl.errors;
+  Map<String, Object>? get officeErrors => officeControl.errors;
 
   void get idFocus => form.focus(idControlPath());
 
@@ -842,7 +842,7 @@ class UserProfileOForm implements FormModel<UserProfileO, UserProfileOOutput> {
   );
 
   @override
-  void updateInitial(Map<String, dynamic>? value, String? path) {
+  void updateInitial(Map<String, Object?>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -870,7 +870,7 @@ class UserProfileOForm implements FormModel<UserProfileO, UserProfileOOutput> {
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, dynamic>{};
+          current[key] = <String, Object?>{};
         }
         current = current[key];
         continue;
@@ -950,7 +950,7 @@ class AddressOForm implements FormModel<AddressO, AddressOOutput> {
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, dynamic> initial;
+  final Map<String, Object?> initial;
 
   String streetControlPath() => pathBuilder(streetControlName);
 
@@ -997,11 +997,11 @@ class AddressOForm implements FormModel<AddressO, AddressOOutput> {
     }
   }
 
-  Map<String, dynamic>? get streetErrors => streetControl.errors;
+  Map<String, Object>? get streetErrors => streetControl.errors;
 
-  Map<String, dynamic>? get cityErrors => cityControl.errors;
+  Map<String, Object>? get cityErrors => cityControl.errors;
 
-  Map<String, dynamic>? get zipErrors => zipControl.errors;
+  Map<String, Object>? get zipErrors => zipControl.errors;
 
   void get streetFocus => form.focus(streetControlPath());
 
@@ -1380,7 +1380,7 @@ class AddressOForm implements FormModel<AddressO, AddressOOutput> {
   );
 
   @override
-  void updateInitial(Map<String, dynamic>? value, String? path) {
+  void updateInitial(Map<String, Object?>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -1408,7 +1408,7 @@ class AddressOForm implements FormModel<AddressO, AddressOOutput> {
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, dynamic>{};
+          current[key] = <String, Object?>{};
         }
         current = current[key];
         continue;
@@ -1665,13 +1665,13 @@ class ReactiveUserProfileOFormFormGroupArrayBuilder<
        super(key: key);
 
   final ExtendedControl<
-    List<Map<String, dynamic>?>,
+    List<Map<String, Object?>?>,
     List<ReactiveUserProfileOFormFormGroupArrayBuilderT>
   >?
   extended;
 
   final ExtendedControl<
-    List<Map<String, dynamic>?>,
+    List<Map<String, Object?>?>,
     List<ReactiveUserProfileOFormFormGroupArrayBuilderT>
   >
   Function(UserProfileOForm formModel)?
@@ -1702,7 +1702,7 @@ class ReactiveUserProfileOFormFormGroupArrayBuilder<
 
     final value = (extended ?? getExtended?.call(formModel))!;
 
-    return StreamBuilder<List<Map<String, dynamic>?>?>(
+    return StreamBuilder<List<Map<String, Object?>?>?>(
       stream: value.control.valueChanges,
       builder: (context, snapshot) {
         final itemList =

@@ -11,13 +11,13 @@ class ExtendedControlMethod extends ReactiveFormGeneratorMethod {
     final type = (field.type as ParameterizedType).typeArguments.first;
 
     final typeReference =
-        'ExtendedControl<List<Map<String, dynamic>?>, List<${type}Form>>';
+        'ExtendedControl<List<Map<String, Object?>?>, List<${type}Form>>';
 
     final body =
         '''
-      ExtendedControl<List<Map<String, dynamic>?>, List<${type}Form>>(
+      ExtendedControl<List<Map<String, Object?>?>, List<${type}Form>>(
           form.control(${field.fieldControlPath}())
-              as FormArray<Map<String, dynamic>>,
+              as FormArray<Map<String, Object?>>,
           () => ${field.name}${field.className})
     ''';
 

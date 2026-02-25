@@ -53,7 +53,7 @@ class ReactiveAnimatedUrlLisOForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvokedWithResult,
+    this.onPopInvoked,
   }) : super(key: key);
 
   final Widget child;
@@ -62,7 +62,7 @@ class ReactiveAnimatedUrlLisOForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
+  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
 
   static AnimatedUrlLisOForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -89,7 +89,7 @@ class ReactiveAnimatedUrlLisOForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvokedWithResult: onPopInvokedWithResult,
+        onPopInvoked: onPopInvoked,
         child: child,
       ),
     );
@@ -110,7 +110,7 @@ class AnimatedUrlLisOFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvokedWithResult,
+    this.onPopInvoked,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -121,7 +121,7 @@ class AnimatedUrlLisOFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
+  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
 
   final Widget Function(
     BuildContext context,
@@ -211,11 +211,11 @@ class _AnimatedUrlLisOFormBuilderState
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
+      // onPopInvoked: widget.onPopInvoked,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvokedWithResult: widget.onPopInvokedWithResult,
+        onPopInvoked: widget.onPopInvoked,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -243,7 +243,7 @@ class AnimatedUrlLisOForm
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, dynamic> initial;
+  final Map<String, Object?> initial;
 
   String urlListControlPath() => pathBuilder(urlListControlName);
 
@@ -262,7 +262,7 @@ class AnimatedUrlLisOForm
     }
   }
 
-  Map<String, dynamic> get urlListErrors => urlListControl.errors;
+  Map<String, Object> get urlListErrors => urlListControl.errors;
 
   void get urlListFocus => form.focus(urlListControlPath());
 
@@ -369,8 +369,8 @@ class AnimatedUrlLisOForm
     emitEvent: emitEvent,
   );
 
-  FormArray<Map<String, dynamic>> get urlListControl =>
-      form.control(urlListControlPath()) as FormArray<Map<String, dynamic>>;
+  FormArray<Map<String, Object?>> get urlListControl =>
+      form.control(urlListControlPath()) as FormArray<Map<String, Object?>>;
 
   List<UrlEntityOForm> get urlListUrlEntityOForm {
     final values = urlListControl.controls.map((e) => e.value).toList();
@@ -405,10 +405,10 @@ class AnimatedUrlLisOForm
     }
   }
 
-  ExtendedControl<List<Map<String, dynamic>?>, List<UrlEntityOForm>>
+  ExtendedControl<List<Map<String, Object?>?>, List<UrlEntityOForm>>
   get urlListExtendedControl =>
-      ExtendedControl<List<Map<String, dynamic>?>, List<UrlEntityOForm>>(
-        form.control(urlListControlPath()) as FormArray<Map<String, dynamic>>,
+      ExtendedControl<List<Map<String, Object?>?>, List<UrlEntityOForm>>(
+        form.control(urlListControlPath()) as FormArray<Map<String, Object?>>,
         () => urlListUrlEntityOForm,
       );
 
@@ -547,7 +547,7 @@ class AnimatedUrlLisOForm
   );
 
   @override
-  void updateInitial(Map<String, dynamic>? value, String? path) {
+  void updateInitial(Map<String, Object?>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -575,7 +575,7 @@ class AnimatedUrlLisOForm
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, dynamic>{};
+          current[key] = <String, Object?>{};
         }
         current = current[key];
         continue;
@@ -637,7 +637,7 @@ class UrlEntityOForm implements FormModel<UrlEntityO, UrlEntityOOutput> {
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, dynamic> initial;
+  final Map<String, Object?> initial;
 
   String labelControlPath() => pathBuilder(labelControlName);
 
@@ -669,9 +669,9 @@ class UrlEntityOForm implements FormModel<UrlEntityO, UrlEntityOOutput> {
     }
   }
 
-  Map<String, dynamic>? get labelErrors => labelControl.errors;
+  Map<String, Object>? get labelErrors => labelControl.errors;
 
-  Map<String, dynamic>? get urlErrors => urlControl.errors;
+  Map<String, Object>? get urlErrors => urlControl.errors;
 
   void get labelFocus => form.focus(labelControlPath());
 
@@ -958,7 +958,7 @@ class UrlEntityOForm implements FormModel<UrlEntityO, UrlEntityOOutput> {
   );
 
   @override
-  void updateInitial(Map<String, dynamic>? value, String? path) {
+  void updateInitial(Map<String, Object?>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -986,7 +986,7 @@ class UrlEntityOForm implements FormModel<UrlEntityO, UrlEntityOOutput> {
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, dynamic>{};
+          current[key] = <String, Object?>{};
         }
         current = current[key];
         continue;
@@ -1233,13 +1233,13 @@ class ReactiveAnimatedUrlLisOFormFormGroupArrayBuilder<
        super(key: key);
 
   final ExtendedControl<
-    List<Map<String, dynamic>?>,
+    List<Map<String, Object?>?>,
     List<ReactiveAnimatedUrlLisOFormFormGroupArrayBuilderT>
   >?
   extended;
 
   final ExtendedControl<
-    List<Map<String, dynamic>?>,
+    List<Map<String, Object?>?>,
     List<ReactiveAnimatedUrlLisOFormFormGroupArrayBuilderT>
   >
   Function(AnimatedUrlLisOForm formModel)?
@@ -1270,7 +1270,7 @@ class ReactiveAnimatedUrlLisOFormFormGroupArrayBuilder<
 
     final value = (extended ?? getExtended?.call(formModel))!;
 
-    return StreamBuilder<List<Map<String, dynamic>?>?>(
+    return StreamBuilder<List<Map<String, Object?>?>?>(
       stream: value.control.valueChanges,
       builder: (context, snapshot) {
         final itemList =

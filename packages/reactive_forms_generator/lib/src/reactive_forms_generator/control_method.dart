@@ -42,7 +42,7 @@ class ControlMethod extends ReactiveFormGeneratorMethod {
     String typeReference = 'FormArray<$displayType>';
 
     if (field.isFormGroupArray) {
-      typeReference = 'FormArray<Map<String, dynamic>>';
+      typeReference = 'FormArray<Map<String, Object?>>';
     }
 
     String body = 'form.control(${field.fieldControlPath}()) as $typeReference';

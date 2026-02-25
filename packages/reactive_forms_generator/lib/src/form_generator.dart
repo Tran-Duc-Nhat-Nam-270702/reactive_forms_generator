@@ -802,7 +802,7 @@ class FormGenerator {
                 ..name = 'initial'
                 ..annotations.add(const CodeExpression(Code('override')))
                 ..modifier = FieldModifier.final$
-                ..type = const Reference('Map<String, dynamic>'),
+                ..type = const Reference('Map<String, Object?>'),
             ),
           ])
           ..constructors.add(_constructor)
@@ -860,7 +860,7 @@ class FormGenerator {
                   Parameter(
                     (b) => b
                       ..name = 'value'
-                      ..type = const Reference('Map<String, dynamic>?'),
+                      ..type = const Reference('Map<String, Object?>?'),
                   ),
                   Parameter(
                     (b) => b
@@ -897,7 +897,7 @@ class FormGenerator {
 
                     if (current is Map) {
                       if (!current.containsKey(key)) {
-                        current[key] = <String, dynamic>{};
+                        current[key] = <String, Object?>{};
                       }
                       current = current[key];
                       continue;

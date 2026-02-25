@@ -11,8 +11,8 @@ resolution: workspace
 dependencies:
   build: ^4.0.4
   source_gen: ^4.1.2
-  _fe_analyzer_shared: ^93.0.0
-  analyzer: ^10.0.0
+  _fe_analyzer_shared: ^92.0.0
+  analyzer: ^9.0.0
   path: ^1.9.1
   build_runner: ^2.10.5
   code_builder: ^4.11.1

@@ -70,7 +70,7 @@ class ReactiveFormBuilder {
         ),
         Parameter(
           (b) => b
-            ..name = 'onPopInvokedWithResultWithResult'
+            ..name = 'onPopInvokedWithResult'
             ..named = true
             ..toThis = true,
         ),
@@ -117,7 +117,7 @@ class ReactiveFormBuilder {
     ),
     Field(
       (b) => b
-        ..name = 'onPopInvokedWithResultWithResult'
+        ..name = 'onPopInvokedWithResult'
         ..type = const Reference(
           'void Function(FormGroup formGroup, bool didPop, dynamic? result)?',
         )
@@ -248,7 +248,7 @@ class ReactiveFormBuilder {
                   child: ReactiveFormBuilder(
                     form: () => _formModel.form,
                     canPop: widget.canPop,
-                    onPopInvokedWithResultWithResult: widget.onPopInvokedWithResultWithResult,
+                    onPopInvokedWithResult: widget.onPopInvokedWithResult,
                     builder: (context, formGroup, child) => widget.builder(context, _formModel, widget.child),
                     child: widget.child,
                   ),

@@ -99,7 +99,7 @@ class ReactiveSomeWiredNameForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvokedWithResult,
+    this.onPopInvoked,
   }) : super(key: key);
 
   final Widget child;
@@ -108,7 +108,7 @@ class ReactiveSomeWiredNameForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
+  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
 
   static SomeWiredNameForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -135,7 +135,7 @@ class ReactiveSomeWiredNameForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvokedWithResult: onPopInvokedWithResult,
+        onPopInvoked: onPopInvoked,
         child: child,
       ),
     );
@@ -156,7 +156,7 @@ class SomeWiredNameFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvokedWithResult,
+    this.onPopInvoked,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -167,7 +167,7 @@ class SomeWiredNameFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final ReactiveFormPopInvokedWithResultCallback? onPopInvokedWithResult;
+  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
 
   final Widget Function(
     BuildContext context,
@@ -256,11 +256,11 @@ class _SomeWiredNameFormBuilderState extends State<SomeWiredNameFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
+      // onPopInvoked: widget.onPopInvoked,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvokedWithResult: widget.onPopInvokedWithResult,
+        onPopInvoked: widget.onPopInvoked,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -289,7 +289,7 @@ class SomeWiredNameForm implements FormModel<RenamedBasic, RenamedBasic> {
   final Map<String, bool> _disabled = {};
 
   @override
-  final Map<String, dynamic> initial;
+  final Map<String, Object?> initial;
 
   String emailControlPath() => pathBuilder(emailControlName);
 
@@ -321,9 +321,9 @@ class SomeWiredNameForm implements FormModel<RenamedBasic, RenamedBasic> {
     }
   }
 
-  Map<String, dynamic> get emailErrors => emailControl.errors;
+  Map<String, Object> get emailErrors => emailControl.errors;
 
-  Map<String, dynamic> get passwordErrors => passwordControl.errors;
+  Map<String, Object> get passwordErrors => passwordControl.errors;
 
   void get emailFocus => form.focus(emailControlPath());
 
@@ -563,7 +563,7 @@ class SomeWiredNameForm implements FormModel<RenamedBasic, RenamedBasic> {
   );
 
   @override
-  void updateInitial(Map<String, dynamic>? value, String? path) {
+  void updateInitial(Map<String, Object?>? value, String? path) {
     if (_formModel != null) {
       _formModel?.updateInitial(currentForm.rawValue, path);
       return;
@@ -591,7 +591,7 @@ class SomeWiredNameForm implements FormModel<RenamedBasic, RenamedBasic> {
 
       if (current is Map) {
         if (!current.containsKey(key)) {
-          current[key] = <String, dynamic>{};
+          current[key] = <String, Object?>{};
         }
         current = current[key];
         continue;
@@ -812,13 +812,13 @@ class ReactiveSomeWiredNameFormFormGroupArrayBuilder<
        super(key: key);
 
   final ExtendedControl<
-    List<Map<String, dynamic>?>,
+    List<Map<String, Object?>?>,
     List<ReactiveSomeWiredNameFormFormGroupArrayBuilderT>
   >?
   extended;
 
   final ExtendedControl<
-    List<Map<String, dynamic>?>,
+    List<Map<String, Object?>?>,
     List<ReactiveSomeWiredNameFormFormGroupArrayBuilderT>
   >
   Function(SomeWiredNameForm formModel)?
@@ -849,7 +849,7 @@ class ReactiveSomeWiredNameFormFormGroupArrayBuilder<
 
     final value = (extended ?? getExtended?.call(formModel))!;
 
-    return StreamBuilder<List<Map<String, dynamic>?>?>(
+    return StreamBuilder<List<Map<String, Object?>?>?>(
       stream: value.control.valueChanges,
       builder: (context, snapshot) {
         final itemList =
