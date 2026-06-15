@@ -98,11 +98,11 @@ Map<String, String> _annotationParamsFromElement(
               (meta as ElementAnnotationImpl).annotationAst.arguments
                   as ArgumentListImpl;
           for (var argument in argumentList.arguments) {
-            final argumentNamedExpression = argument as NamedExpressionImpl;
+            final argumentNamedExpression = argument as NamedArgumentImpl;
             result.addEntries([
               MapEntry(
-                argumentNamedExpression.name.label.toSource(),
-                argumentNamedExpression.expression.toSource(),
+                argumentNamedExpression.name.type.name,
+                argumentNamedExpression.argumentExpression.toSource(),
               ),
             ]);
           }

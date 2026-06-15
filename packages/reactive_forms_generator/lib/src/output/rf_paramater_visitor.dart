@@ -40,18 +40,18 @@ class RfParameterVisitor extends GeneralizingAstVisitor<dynamic> {
     //   // } );
     //
     switch (node) {
-      case DefaultFormalParameterImpl():
+      case FormalParameterImpl():
         // final p = node;
         final hasDefaultValue =
-            node.parameter.declaredFragment?.element.hasDefaultValue == true;
-        final hasDefaultAnnotation = node.parameter.metadata.fold(
+            node.newParameter.declaredFragment?.element.hasDefaultValue == true;
+        final hasDefaultAnnotation = node.newParameter.metadata.fold(
           false,
           (acc, e) => acc || e.name.toString().startsWith('Default'),
         );
 
         final hasRfGroupAnnotation =
             node
-                .parameter
+                .newParameter
                 .declaredFragment
                 ?.element
                 .type
@@ -59,7 +59,7 @@ class RfParameterVisitor extends GeneralizingAstVisitor<dynamic> {
                 ?.hasRfGroupAnnotation ==
             true;
 
-        final type = node.parameter.declaredFragment?.element.type;
+        final type = node.newParameter.declaredFragment?.element.type;
         final isList =
             type != null &&
             type.isDartCoreList == true &&

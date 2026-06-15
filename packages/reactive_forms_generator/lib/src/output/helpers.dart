@@ -8,12 +8,12 @@ void replaceR(
   Map<String, FormalParameter> fieldFormalParameter,
 ) {
   fieldFormalParameter.forEach((key, node) {
-    if (node is SimpleFormalParameterImpl) {
+    if (node is RegularFormalParameterImpl) {
       NodeReplacer.replace(node, node.newParameter);
-    } else if (node is DefaultFormalParameterImpl) {
-      final parameter = node.parameter;
+    } else if (node is FormalParameterImpl) {
+      final parameter = node.newParameter;
 
-      if (parameter is SimpleFormalParameterImpl) {
+      if (parameter is RegularFormalParameterImpl) {
         final field = fieldDeclaration[key];
         if (field != null && field is FieldDeclarationImpl) {
           NodeReplacer.replace(field, field.newField);
