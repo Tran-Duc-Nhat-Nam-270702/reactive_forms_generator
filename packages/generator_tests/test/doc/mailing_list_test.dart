@@ -16,22 +16,22 @@ void main() {
             import 'package:reactive_forms/reactive_forms.dart';
             import 'package:reactive_forms/src/validators/email_validator.dart';
             import 'package:reactive_forms_annotations/reactive_forms_annotations.dart';
-            
+
             part '$fileName.gform.dart';
-            
+
             class MailingListValidator extends Validator<dynamic> {
               const MailingListValidator() : super();
-            
+
               @override
               Map<String, dynamic>? validate(AbstractControl control) {
                 return null;
               }
             }
-            
+
             @Rf(output: false)
             class MailingList {
               final List<String?> emailList;
-            
+
               MailingList({
                 @RfArray(
                   validators: [MailingListValidator()],
@@ -102,7 +102,7 @@ class ReactiveMailingListForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -111,7 +111,7 @@ class ReactiveMailingListForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   static MailingListForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -138,7 +138,7 @@ class ReactiveMailingListForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -158,7 +158,7 @@ class MailingListFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -169,7 +169,7 @@ class MailingListFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -257,11 +257,11 @@ class _MailingListFormBuilderState extends State<MailingListFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -307,7 +307,7 @@ class MailingListForm implements FormModel<MailingList, MailingList> {
     }
   }
 
-  Map<String, Object> get emailListErrors => emailListControl.errors;
+  Map<String, dynamic> get emailListErrors => emailListControl.errors;
 
   void get emailListFocus => form.focus(emailListControlPath());
 

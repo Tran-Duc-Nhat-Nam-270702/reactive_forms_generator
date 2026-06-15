@@ -15,19 +15,19 @@ void main() {
             import 'package:flutter/material.dart';
             import 'package:reactive_forms/reactive_forms.dart';
             import 'package:reactive_forms_annotations/reactive_forms_annotations.dart';
-            
+
             part '$fileName.gform.dart';
 
             @Rf(output: false)
             class Group {
               final Personal? personal;
-            
+
               final Phone? phone;
-            
+
               final Address? address;
-            
+
               final Address? address2;
-            
+
               Group({
                 this.personal,
                 this.phone,
@@ -35,39 +35,39 @@ void main() {
                 this.address2,
               });
             }
-            
+
             @RfGroup()
             class Personal {
               final String? name;
-            
+
               final String? email;
-            
+
               Personal({
                 @RfControl<String>() this.name,
                 @RfControl<String>() this.email,
               });
             }
-            
+
             @RfGroup()
             class Phone {
               final String? phoneNumber;
-            
+
               final String? countryIso;
-            
+
               Phone({
                 @RfControl<String>() this.phoneNumber,
                 @RfControl<String>() this.countryIso,
               });
             }
-            
+
             @RfGroup()
             class Address {
               final String? street;
-            
+
               final String? city;
-            
+
               final String? zip;
-            
+
               Address({
                 @RfControl<String>() this.street,
                 @RfControl<String>() this.city,
@@ -133,7 +133,7 @@ class ReactiveGroupForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -142,7 +142,7 @@ class ReactiveGroupForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   static GroupForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -165,7 +165,7 @@ class ReactiveGroupForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -184,7 +184,7 @@ class GroupFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -195,7 +195,7 @@ class GroupFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -278,11 +278,11 @@ class _GroupFormBuilderState extends State<GroupFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -379,13 +379,13 @@ class GroupForm implements FormModel<Group, Group> {
     }
   }
 
-  Map<String, Object>? get personalErrors => personalControl.errors;
+  Map<String, dynamic>? get personalErrors => personalControl.errors;
 
-  Map<String, Object>? get phoneErrors => phoneControl.errors;
+  Map<String, dynamic>? get phoneErrors => phoneControl.errors;
 
-  Map<String, Object>? get addressErrors => addressControl.errors;
+  Map<String, dynamic>? get addressErrors => addressControl.errors;
 
-  Map<String, Object>? get address2Errors => address2Control.errors;
+  Map<String, dynamic>? get address2Errors => address2Control.errors;
 
   void get personalFocus => form.focus(personalControlPath());
 
@@ -973,9 +973,9 @@ class PersonalForm implements FormModel<Personal, Personal> {
     }
   }
 
-  Map<String, Object>? get nameErrors => nameControl.errors;
+  Map<String, dynamic>? get nameErrors => nameControl.errors;
 
-  Map<String, Object>? get emailErrors => emailControl.errors;
+  Map<String, dynamic>? get emailErrors => emailControl.errors;
 
   void get nameFocus => form.focus(nameControlPath());
 
@@ -1393,9 +1393,9 @@ class PhoneForm implements FormModel<Phone, Phone> {
     }
   }
 
-  Map<String, Object>? get phoneNumberErrors => phoneNumberControl.errors;
+  Map<String, dynamic>? get phoneNumberErrors => phoneNumberControl.errors;
 
-  Map<String, Object>? get countryIsoErrors => countryIsoControl.errors;
+  Map<String, dynamic>? get countryIsoErrors => countryIsoControl.errors;
 
   void get phoneNumberFocus => form.focus(phoneNumberControlPath());
 
@@ -1826,11 +1826,11 @@ class AddressForm implements FormModel<Address, Address> {
     }
   }
 
-  Map<String, Object>? get streetErrors => streetControl.errors;
+  Map<String, dynamic>? get streetErrors => streetControl.errors;
 
-  Map<String, Object>? get cityErrors => cityControl.errors;
+  Map<String, dynamic>? get cityErrors => cityControl.errors;
 
-  Map<String, Object>? get zipErrors => zipControl.errors;
+  Map<String, dynamic>? get zipErrors => zipControl.errors;
 
   void get streetFocus => form.focus(streetControlPath());
 

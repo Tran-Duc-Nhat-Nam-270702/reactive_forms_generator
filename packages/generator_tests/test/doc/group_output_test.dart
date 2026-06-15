@@ -15,19 +15,19 @@ void main() {
             import 'package:flutter/material.dart';
             import 'package:reactive_forms/reactive_forms.dart';
             import 'package:reactive_forms_annotations/reactive_forms_annotations.dart';
-            
+
             part '$fileName.gform.dart';
 
             @Rf(output: true)
             class GroupO {
               final PersonalO? personal;
-            
+
               final PhoneO? phone;
-                        
+
               final AddressO? address;
-            
+
               final AddressO? address2;
-            
+
               GroupO({
                 this.personal,
                 this.phone,
@@ -35,39 +35,39 @@ void main() {
                 this.address2,
               });
             }
-            
+
             @RfGroup()
             class PersonalO {
               final String? name;
-            
+
               final String? email;
-            
+
               PersonalO({
                 @RfControl<String>() this.name,
                 @RfControl<String>() this.email,
               });
             }
-            
+
             @RfGroup()
             class PhoneO {
               final String? phoneNumber;
-            
+
               final String? countryIso;
-            
+
               PhoneO({
                 @RfControl<String>() this.phoneNumber,
                 @RfControl<String>() this.countryIso,
               });
             }
-            
+
             @RfGroup()
             class AddressO {
               final String? street;
-            
+
               final String? city;
-            
+
               final String? zip;
-            
+
               AddressO({
                 @RfControl<String>() this.street,
                 @RfControl<String>() this.city,
@@ -136,7 +136,7 @@ class ReactiveGroupOForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -145,7 +145,7 @@ class ReactiveGroupOForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   static GroupOForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -168,7 +168,7 @@ class ReactiveGroupOForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -187,7 +187,7 @@ class GroupOFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -198,7 +198,7 @@ class GroupOFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -281,11 +281,11 @@ class _GroupOFormBuilderState extends State<GroupOFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -385,13 +385,13 @@ class GroupOForm implements FormModel<GroupO, GroupOOutput> {
     }
   }
 
-  Map<String, Object>? get personalErrors => personalControl.errors;
+  Map<String, dynamic>? get personalErrors => personalControl.errors;
 
-  Map<String, Object>? get phoneErrors => phoneControl.errors;
+  Map<String, dynamic>? get phoneErrors => phoneControl.errors;
 
-  Map<String, Object>? get addressErrors => addressControl.errors;
+  Map<String, dynamic>? get addressErrors => addressControl.errors;
 
-  Map<String, Object>? get address2Errors => address2Control.errors;
+  Map<String, dynamic>? get address2Errors => address2Control.errors;
 
   void get personalFocus => form.focus(personalControlPath());
 
@@ -984,9 +984,9 @@ class PersonalOForm implements FormModel<PersonalO, PersonalOOutput> {
     }
   }
 
-  Map<String, Object>? get nameErrors => nameControl.errors;
+  Map<String, dynamic>? get nameErrors => nameControl.errors;
 
-  Map<String, Object>? get emailErrors => emailControl.errors;
+  Map<String, dynamic>? get emailErrors => emailControl.errors;
 
   void get nameFocus => form.focus(nameControlPath());
 
@@ -1405,9 +1405,9 @@ class PhoneOForm implements FormModel<PhoneO, PhoneOOutput> {
     }
   }
 
-  Map<String, Object>? get phoneNumberErrors => phoneNumberControl.errors;
+  Map<String, dynamic>? get phoneNumberErrors => phoneNumberControl.errors;
 
-  Map<String, Object>? get countryIsoErrors => countryIsoControl.errors;
+  Map<String, dynamic>? get countryIsoErrors => countryIsoControl.errors;
 
   void get phoneNumberFocus => form.focus(phoneNumberControlPath());
 
@@ -1845,11 +1845,11 @@ class AddressOForm implements FormModel<AddressO, AddressOOutput> {
     }
   }
 
-  Map<String, Object>? get streetErrors => streetControl.errors;
+  Map<String, dynamic>? get streetErrors => streetControl.errors;
 
-  Map<String, Object>? get cityErrors => cityControl.errors;
+  Map<String, dynamic>? get cityErrors => cityControl.errors;
 
-  Map<String, Object>? get zipErrors => zipControl.errors;
+  Map<String, dynamic>? get zipErrors => zipControl.errors;
 
   void get streetFocus => form.focus(streetControlPath());
 

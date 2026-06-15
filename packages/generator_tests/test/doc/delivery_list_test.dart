@@ -16,27 +16,27 @@ void main() {
             import 'package:reactive_forms/reactive_forms.dart';
             import 'package:reactive_forms/src/validators/required_validator.dart';
             import 'package:reactive_forms_annotations/reactive_forms_annotations.dart';
-            
+
             part '$fileName.gform.dart';
-            
+
             @Rf(output: false)
             class DeliveryList {
               final List<DeliveryPoint> deliveryList;
               final List<Client>? clientList;
-            
+
               const DeliveryList({
                 @RfArray() this.deliveryList = const [],
                 @RfArray() this.clientList,
               });
             }
-            
+
             @Rf(output: false, name: 'StandaloneDeliveryPoint')
             @RfGroup()
             class DeliveryPoint {
               final String name;
-            
+
               final Address? address;
-            
+
               const DeliveryPoint({
                 @RfControl(
                   validators: [RequiredValidator()],
@@ -45,30 +45,30 @@ void main() {
                 this.address,
               });
             }
-            
+
             enum ClientType { home, office }
-            
+
             @RfGroup()
             class Client {
               final ClientType clientType;
-            
+
               final String? name;
-            
+
               final String? notes;
-            
+
               const Client({
                 @RfControl<ClientType>() required this.clientType,
                 @RfControl<String>() this.name,
                 @RfControl<String>() this.notes,
               });
             }
-            
+
             @RfGroup()
             class Address {
               final String? street;
-            
+
               final String? city;
-            
+
               const Address({
                 @RfControl(
                   validators: [RequiredValidator()],
@@ -139,7 +139,7 @@ class ReactiveDeliveryListForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -148,7 +148,7 @@ class ReactiveDeliveryListForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   static DeliveryListForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -175,7 +175,7 @@ class ReactiveDeliveryListForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -196,7 +196,7 @@ class DeliveryListFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -207,7 +207,7 @@ class DeliveryListFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -296,11 +296,11 @@ class _DeliveryListFormBuilderState extends State<DeliveryListFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -367,9 +367,9 @@ class DeliveryListForm implements FormModel<DeliveryList, DeliveryList> {
     }
   }
 
-  Map<String, Object> get deliveryListErrors => deliveryListControl.errors;
+  Map<String, dynamic> get deliveryListErrors => deliveryListControl.errors;
 
-  Map<String, Object>? get clientListErrors => clientListControl.errors;
+  Map<String, dynamic>? get clientListErrors => clientListControl.errors;
 
   void get deliveryListFocus => form.focus(deliveryListControlPath());
 
@@ -989,9 +989,9 @@ class DeliveryPointForm implements FormModel<DeliveryPoint, DeliveryPoint> {
     }
   }
 
-  Map<String, Object> get nameErrors => nameControl.errors;
+  Map<String, dynamic> get nameErrors => nameControl.errors;
 
-  Map<String, Object>? get addressErrors => addressControl.errors;
+  Map<String, dynamic>? get addressErrors => addressControl.errors;
 
   void get nameFocus => form.focus(nameControlPath());
 
@@ -1378,9 +1378,9 @@ class AddressForm implements FormModel<Address, Address> {
     }
   }
 
-  Map<String, Object>? get streetErrors => streetControl.errors;
+  Map<String, dynamic>? get streetErrors => streetControl.errors;
 
-  Map<String, Object>? get cityErrors => cityControl.errors;
+  Map<String, dynamic>? get cityErrors => cityControl.errors;
 
   void get streetFocus => form.focus(streetControlPath());
 
@@ -1811,11 +1811,11 @@ class ClientForm implements FormModel<Client, Client> {
     }
   }
 
-  Map<String, Object> get clientTypeErrors => clientTypeControl.errors;
+  Map<String, dynamic> get clientTypeErrors => clientTypeControl.errors;
 
-  Map<String, Object>? get nameErrors => nameControl.errors;
+  Map<String, dynamic>? get nameErrors => nameControl.errors;
 
-  Map<String, Object>? get notesErrors => notesControl.errors;
+  Map<String, dynamic>? get notesErrors => notesControl.errors;
 
   void get clientTypeFocus => form.focus(clientTypeControlPath());
 
@@ -2530,7 +2530,7 @@ class ReactiveStandaloneDeliveryPointForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -2539,7 +2539,7 @@ class ReactiveStandaloneDeliveryPointForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   static StandaloneDeliveryPointForm? of(
     BuildContext context, {
@@ -2569,7 +2569,7 @@ class ReactiveStandaloneDeliveryPointForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -2590,7 +2590,7 @@ class StandaloneDeliveryPointFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -2601,7 +2601,7 @@ class StandaloneDeliveryPointFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -2696,11 +2696,11 @@ class _StandaloneDeliveryPointFormBuilderState
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -2765,9 +2765,9 @@ class StandaloneDeliveryPointForm
     }
   }
 
-  Map<String, Object> get nameErrors => nameControl.errors;
+  Map<String, dynamic> get nameErrors => nameControl.errors;
 
-  Map<String, Object>? get addressErrors => addressControl.errors;
+  Map<String, dynamic>? get addressErrors => addressControl.errors;
 
   void get nameFocus => form.focus(nameControlPath());
 

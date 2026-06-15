@@ -13,13 +13,13 @@ void main() {
         model:
             '''
             import 'package:reactive_forms_annotations/reactive_forms_annotations.dart';
-            
+
             part '$fileName.gform.dart';
-            
+
             @Rf(output: false)
             class StatusList<T extends Enum> {
               final List<T?> list;
-            
+
               StatusList({
                 @RfArray<T>() this.list = const [],
               });
@@ -87,7 +87,7 @@ class ReactiveStatusListForm<T extends Enum> extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -96,7 +96,7 @@ class ReactiveStatusListForm<T extends Enum> extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   static StatusListForm<T>? of<T extends Enum>(
     BuildContext context, {
@@ -126,7 +126,7 @@ class ReactiveStatusListForm<T extends Enum> extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -147,7 +147,7 @@ class StatusListFormBuilder<T extends Enum> extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -158,7 +158,7 @@ class StatusListFormBuilder<T extends Enum> extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -248,11 +248,11 @@ class _StatusListFormBuilderState<T extends Enum>
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -297,7 +297,7 @@ class StatusListForm<T extends Enum>
     }
   }
 
-  Map<String, Object> get listErrors => listControl.errors;
+  Map<String, dynamic> get listErrors => listControl.errors;
 
   void get listFocus => form.focus(listControlPath());
 

@@ -16,15 +16,15 @@ void main() {
             import 'package:freezed_annotation/freezed_annotation.dart';
             import 'package:reactive_forms/reactive_forms.dart';
             import 'package:reactive_forms_annotations/reactive_forms_annotations.dart';
-            
+
             part '$fileName.freezed.dart';
             part '$fileName.g.dart';
             part '$fileName.gform.dart';
-            
+
             enum NumberingStandard { ada, fdi }
-            
+
             enum MeasurementType { cal, pdGm }
-            
+
             extension MeasurementTypeExt on MeasurementType {
               String get fullText {
                 switch (this) {
@@ -34,7 +34,7 @@ void main() {
                     return 'Pocket Depth (PD) / Gingival Margin (GM)';
                 }
               }
-            
+
               String get shortText {
                 switch (this) {
                   case MeasurementType.cal:
@@ -44,7 +44,7 @@ void main() {
                 }
               }
             }
-            
+
             extension NumberingStandardExt on NumberingStandard {
               String get text {
                 switch (this) {
@@ -55,12 +55,12 @@ void main() {
                 }
               }
             }
-            
+
             @freezed
             @Rf(output: false)
             abstract class Profile with _\$Profile {
               const Profile._();
-            
+
               factory Profile(String id, {
                 required String anotherId,
                 @RfControl<String>() required String name,
@@ -72,39 +72,39 @@ void main() {
                 required TimerSetting timer,
                 @RfControl<bool>() required bool audioGuidance,
               }) = _Profile;
-            
+
               factory Profile.fromJson(Map<String, dynamic> json) =>
                   _\$ProfileFromJson(json);
             }
-            
+
             @freezed
             @RfGroup()
             abstract class ThresholdSetting with _\$ThresholdSetting {
               static const values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-            
+
               const factory ThresholdSetting({
                 @RfControl<bool>() @Default(true) bool isEnabled,
                 @RfControl<int>() @Default(2) int value,
               }) = _ThresholdSetting;
-            
+
               factory ThresholdSetting.fromJson(Map<String, dynamic> json) =>
                   _\$ThresholdSettingFromJson(json);
             }
-            
+
             @freezed
             @RfGroup()
             abstract class TimerSetting with _\$TimerSetting {
               static const values = [1, 2, 3, 4, 5, 6];
-            
+
               const factory TimerSetting({
                 @RfControl<bool>() @Default(false) bool isEnabled,
                 @RfControl<int>() @Default(5) int value,
               }) = _TimerSetting;
-            
+
               factory TimerSetting.fromJson(Map<String, dynamic> json) =>
                   _\$TimerSettingFromJson(json);
             }
-            
+
             @RfGroup()
             @freezed
             abstract class IncidenceFilter with _\$IncidenceFilter {
@@ -116,21 +116,21 @@ void main() {
                 @RfControl<bool>() @Default(true) bool isCalculusEnabled,
                 @RfControl<bool>() @Default(true) bool isPlaqueEnabled,
               }) = _IncidenceFilter;
-            
+
               factory IncidenceFilter.fromJson(Map<String, dynamic> json) =>
                   _\$IncidenceFilterFromJson(json);
             }
-            
+
             enum ChartingOrderType { arch, quadrant }
             enum Direction {
               /// ==>
               rightward,
-            
+
               /// <===
               leftward
             }
             enum ToothSide { facial, lingual }
-            
+
             @freezed
             abstract class ScanOrder with _\$ScanOrder {
               const factory ScanOrder.arch(
@@ -138,17 +138,17 @@ void main() {
                 required Direction direction,
                 required ToothSide toothSide,
               }) = ArchScanOrder;
-            
+
               const factory ScanOrder.quadrant(
                 Quadrant quadrant, {
                 required Direction direction,
                 required ToothSide toothSide,
               }) = QuadrantScanOrder;
-            
+
               factory ScanOrder.fromJson(Map<String, dynamic> json) =>
                   _\$ScanOrderFromJson(json);
             }
-            
+
             @freezed
             abstract class ChartingOrderValue with _\$ChartingOrderValue {
               const factory ChartingOrderValue({
@@ -156,40 +156,40 @@ void main() {
                 @Default(0) int selectedOption,
                 required List<List<ScanOrder>> order,
               }) = _ChartingOrderValue;
-            
+
               factory ChartingOrderValue.arch() => _create(ChartingOrderType.arch);
-            
+
               factory ChartingOrderValue.quadrant() => _create(ChartingOrderType.quadrant);
-            
+
               static ChartingOrderValue _create(ChartingOrderType chartingOrder) =>
                   ChartingOrderValue(
                     chartingOrder: chartingOrder,
                     selectedOption: 0,
                     order: ChartingOrders.options[chartingOrder]!,
                   );
-            
+
               factory ChartingOrderValue.fromJson(Map<String, dynamic> json) =>
                   _\$ChartingOrderValueFromJson(json);
             }
-            
+
             enum Jaw {
               /// Upper jaw
               maxilla,
-            
+
               /// Lower jaw
               mandible
             }
-            
+
             enum Quadrant { upperLeft, upperRight, lowerRight, lowerLeft }
-            
+
             class ChartingOrders {
               ChartingOrders._();
-            
+
               static const Map<ChartingOrderType, List<List<ScanOrder>>> options = {
                 ChartingOrderType.arch: [_arch01, _arch02, _arch03, _arch04],
                 ChartingOrderType.quadrant: [_quadrant01, _quadrant02],
               };
-            
+
               static const _arch01 = [
                 /*1*/ ArchScanOrder(Jaw.maxilla,
                     direction: Direction.rightward, toothSide: ToothSide.facial),
@@ -200,7 +200,7 @@ void main() {
                 /*4*/ ArchScanOrder(Jaw.mandible,
                     direction: Direction.leftward, toothSide: ToothSide.lingual),
               ];
-            
+
               static const _arch02 = [
                 /*1*/ ArchScanOrder(Jaw.mandible,
                     direction: Direction.rightward, toothSide: ToothSide.facial),
@@ -211,7 +211,7 @@ void main() {
                 /*4*/ ArchScanOrder(Jaw.maxilla,
                     direction: Direction.leftward, toothSide: ToothSide.lingual),
               ];
-            
+
               static const _arch03 = [
                 /*1*/ ArchScanOrder(Jaw.maxilla,
                     direction: Direction.rightward, toothSide: ToothSide.facial),
@@ -222,7 +222,7 @@ void main() {
                 /*4*/ ArchScanOrder(Jaw.mandible,
                     direction: Direction.leftward, toothSide: ToothSide.lingual),
               ];
-            
+
               static const _arch04 = [
                 /*1*/ ArchScanOrder(Jaw.maxilla,
                     direction: Direction.rightward, toothSide: ToothSide.facial),
@@ -233,7 +233,7 @@ void main() {
                 /*4*/ ArchScanOrder(Jaw.mandible,
                     direction: Direction.leftward, toothSide: ToothSide.facial),
               ];
-            
+
               static const _quadrant01 = [
                 /*1*/ QuadrantScanOrder(Quadrant.upperLeft,
                     direction: Direction.rightward, toothSide: ToothSide.facial),
@@ -252,7 +252,7 @@ void main() {
                 /*8*/ QuadrantScanOrder(Quadrant.lowerRight,
                     direction: Direction.leftward, toothSide: ToothSide.lingual),
               ];
-            
+
               static const _quadrant02 = [
                 /*1*/ QuadrantScanOrder(Quadrant.upperLeft,
                     direction: Direction.rightward, toothSide: ToothSide.facial),
@@ -334,7 +334,7 @@ class ReactiveProfileForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -343,7 +343,7 @@ class ReactiveProfileForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   static ProfileForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -368,7 +368,7 @@ class ReactiveProfileForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -387,7 +387,7 @@ class ProfileFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -398,7 +398,7 @@ class ProfileFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -485,11 +485,11 @@ class _ProfileFormBuilderState extends State<ProfileFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -694,28 +694,28 @@ class ProfileForm implements FormModel<Profile, Profile> {
     }
   }
 
-  Map<String, Object> get idErrors => idControl.errors;
+  Map<String, dynamic> get idErrors => idControl.errors;
 
-  Map<String, Object> get anotherIdErrors => anotherIdControl.errors;
+  Map<String, dynamic> get anotherIdErrors => anotherIdControl.errors;
 
-  Map<String, Object> get nameErrors => nameControl.errors;
+  Map<String, dynamic> get nameErrors => nameControl.errors;
 
-  Map<String, Object> get chartingOrderErrors => chartingOrderControl.errors;
+  Map<String, dynamic> get chartingOrderErrors => chartingOrderControl.errors;
 
-  Map<String, Object> get numberingStandardErrors =>
+  Map<String, dynamic> get numberingStandardErrors =>
       numberingStandardControl.errors;
 
-  Map<String, Object> get measurementTypeErrors =>
+  Map<String, dynamic> get measurementTypeErrors =>
       measurementTypeControl.errors;
 
-  Map<String, Object> get audioGuidanceErrors => audioGuidanceControl.errors;
+  Map<String, dynamic> get audioGuidanceErrors => audioGuidanceControl.errors;
 
-  Map<String, Object> get incidenceFilterErrors =>
+  Map<String, dynamic> get incidenceFilterErrors =>
       incidenceFilterControl.errors;
 
-  Map<String, Object> get thresholdErrors => thresholdControl.errors;
+  Map<String, dynamic> get thresholdErrors => thresholdControl.errors;
 
-  Map<String, Object> get timerErrors => timerControl.errors;
+  Map<String, dynamic> get timerErrors => timerControl.errors;
 
   void get idFocus => form.focus(idControlPath());
 
@@ -1730,22 +1730,22 @@ class IncidenceFilterForm
     }
   }
 
-  Map<String, Object> get isMobilityEnabledErrors =>
+  Map<String, dynamic> get isMobilityEnabledErrors =>
       isMobilityEnabledControl.errors;
 
-  Map<String, Object> get isFurcationEnabledErrors =>
+  Map<String, dynamic> get isFurcationEnabledErrors =>
       isFurcationEnabledControl.errors;
 
-  Map<String, Object> get isBleedingEnabledErrors =>
+  Map<String, dynamic> get isBleedingEnabledErrors =>
       isBleedingEnabledControl.errors;
 
-  Map<String, Object> get isSuppurationEnabledErrors =>
+  Map<String, dynamic> get isSuppurationEnabledErrors =>
       isSuppurationEnabledControl.errors;
 
-  Map<String, Object> get isCalculusEnabledErrors =>
+  Map<String, dynamic> get isCalculusEnabledErrors =>
       isCalculusEnabledControl.errors;
 
-  Map<String, Object> get isPlaqueEnabledErrors =>
+  Map<String, dynamic> get isPlaqueEnabledErrors =>
       isPlaqueEnabledControl.errors;
 
   void get isMobilityEnabledFocus => form.focus(isMobilityEnabledControlPath());
@@ -2408,9 +2408,9 @@ class ThresholdSettingForm
     }
   }
 
-  Map<String, Object> get isEnabledErrors => isEnabledControl.errors;
+  Map<String, dynamic> get isEnabledErrors => isEnabledControl.errors;
 
-  Map<String, Object> get valueErrors => valueControl.errors;
+  Map<String, dynamic> get valueErrors => valueControl.errors;
 
   void get isEnabledFocus => form.focus(isEnabledControlPath());
 
@@ -2783,9 +2783,9 @@ class TimerSettingForm implements FormModel<TimerSetting, TimerSetting> {
     }
   }
 
-  Map<String, Object> get isEnabledErrors => isEnabledControl.errors;
+  Map<String, dynamic> get isEnabledErrors => isEnabledControl.errors;
 
-  Map<String, Object> get valueErrors => valueControl.errors;
+  Map<String, dynamic> get valueErrors => valueControl.errors;
 
   void get isEnabledFocus => form.focus(isEnabledControlPath());
 

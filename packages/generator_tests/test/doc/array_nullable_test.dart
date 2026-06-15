@@ -16,25 +16,25 @@ void main() {
             import 'package:reactive_forms/reactive_forms.dart';
             import 'package:reactive_forms/src/validators/required_validator.dart';
             import 'package:reactive_forms_annotations/reactive_forms_annotations.dart';
-            
+
             part '$fileName.gform.dart';
-            
+
             enum UserMode { user, admin }
 
             @Rf(output: false)
             class ArrayNullable {
               final List<String> emailList;
-            
+
               final List<bool?> fruitList;
-            
+
               final List<String?>? vegetablesList;
-            
+
               final List<String?>? someList;
-            
+
               final List<String> someListRequired;
-            
+
               final List<UserMode?>? modeList;
-            
+
               ArrayNullable({
                 @RfArray(
                   validators: [RequiredValidator()],
@@ -109,7 +109,7 @@ class ReactiveArrayNullableForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -118,7 +118,7 @@ class ReactiveArrayNullableForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   static ArrayNullableForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -145,7 +145,7 @@ class ReactiveArrayNullableForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -166,7 +166,7 @@ class ArrayNullableFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -177,7 +177,7 @@ class ArrayNullableFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -266,11 +266,11 @@ class _ArrayNullableFormBuilderState extends State<ArrayNullableFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -416,18 +416,18 @@ class ArrayNullableForm implements FormModel<ArrayNullable, ArrayNullable> {
     }
   }
 
-  Map<String, Object>? get someListErrors => someListControl.errors;
+  Map<String, dynamic>? get someListErrors => someListControl.errors;
 
-  Map<String, Object> get someListRequiredErrors =>
+  Map<String, dynamic> get someListRequiredErrors =>
       someListRequiredControl.errors;
 
-  Map<String, Object> get emailListErrors => emailListControl.errors;
+  Map<String, dynamic> get emailListErrors => emailListControl.errors;
 
-  Map<String, Object> get fruitListErrors => fruitListControl.errors;
+  Map<String, dynamic> get fruitListErrors => fruitListControl.errors;
 
-  Map<String, Object>? get vegetablesListErrors => vegetablesListControl.errors;
+  Map<String, dynamic>? get vegetablesListErrors => vegetablesListControl.errors;
 
-  Map<String, Object>? get modeListErrors => modeListControl.errors;
+  Map<String, dynamic>? get modeListErrors => modeListControl.errors;
 
   void get someListFocus => form.focus(someListControlPath());
 

@@ -16,21 +16,21 @@ void main() {
             import 'package:reactive_forms/reactive_forms.dart';
             import 'package:reactive_forms/src/validators/required_validator.dart';
             import 'package:reactive_forms_annotations/reactive_forms_annotations.dart';
-            
+
             part '$fileName.gform.dart';
-            
+
             @Rf(output: true)
             class UserProfileO {
               final String id;
-            
+
               final String? firstName;
-            
+
               final String? lastName;
-            
+
               final AddressO home;
-            
+
               final AddressO? office;
-            
+
               UserProfileO({
                 required this.id,
                 @RfControl(
@@ -45,15 +45,15 @@ void main() {
                 this.office,
               });
             }
-            
+
             @RfGroup()
             class AddressO {
               final String? street;
-            
+
               final String? city;
-            
+
               final String? zip;
-            
+
               AddressO({
                 @RfControl<String>() this.street,
                 @RfControl(
@@ -125,7 +125,7 @@ class ReactiveUserProfileOForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -134,7 +134,7 @@ class ReactiveUserProfileOForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   static UserProfileOForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -161,7 +161,7 @@ class ReactiveUserProfileOForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -182,7 +182,7 @@ class UserProfileOFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -193,7 +193,7 @@ class UserProfileOFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -282,11 +282,11 @@ class _UserProfileOFormBuilderState extends State<UserProfileOFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -400,15 +400,15 @@ class UserProfileOForm implements FormModel<UserProfileO, UserProfileOOutput> {
     }
   }
 
-  Map<String, Object> get idErrors => idControl.errors;
+  Map<String, dynamic> get idErrors => idControl.errors;
 
-  Map<String, Object>? get firstNameErrors => firstNameControl.errors;
+  Map<String, dynamic>? get firstNameErrors => firstNameControl.errors;
 
-  Map<String, Object>? get lastNameErrors => lastNameControl.errors;
+  Map<String, dynamic>? get lastNameErrors => lastNameControl.errors;
 
-  Map<String, Object> get homeErrors => homeControl.errors;
+  Map<String, dynamic> get homeErrors => homeControl.errors;
 
-  Map<String, Object>? get officeErrors => officeControl.errors;
+  Map<String, dynamic>? get officeErrors => officeControl.errors;
 
   void get idFocus => form.focus(idControlPath());
 
@@ -1069,11 +1069,11 @@ class AddressOForm implements FormModel<AddressO, AddressOOutput> {
     }
   }
 
-  Map<String, Object>? get streetErrors => streetControl.errors;
+  Map<String, dynamic>? get streetErrors => streetControl.errors;
 
-  Map<String, Object>? get cityErrors => cityControl.errors;
+  Map<String, dynamic>? get cityErrors => cityControl.errors;
 
-  Map<String, Object>? get zipErrors => zipControl.errors;
+  Map<String, dynamic>? get zipErrors => zipControl.errors;
 
   void get streetFocus => form.focus(streetControlPath());
 

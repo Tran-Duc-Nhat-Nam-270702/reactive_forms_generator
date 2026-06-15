@@ -53,7 +53,7 @@ class ReactiveFreezedClassOForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -62,7 +62,7 @@ class ReactiveFreezedClassOForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   static FreezedClassOForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -89,7 +89,7 @@ class ReactiveFreezedClassOForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -110,7 +110,7 @@ class FreezedClassOFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -121,7 +121,7 @@ class FreezedClassOFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -210,11 +210,11 @@ class _FreezedClassOFormBuilderState extends State<FreezedClassOFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -397,23 +397,23 @@ class FreezedClassOForm
     }
   }
 
-  Map<String, Object>? get genderErrors => genderControl.errors;
+  Map<String, dynamic>? get genderErrors => genderControl.errors;
 
-  Map<String, Object>? get genderRErrors => genderRControl.errors;
+  Map<String, dynamic>? get genderRErrors => genderRControl.errors;
 
-  Map<String, Object>? get idErrors => idControl.errors;
+  Map<String, dynamic>? get idErrors => idControl.errors;
 
-  Map<String, Object>? get idRErrors => idRControl.errors;
+  Map<String, dynamic>? get idRErrors => idRControl.errors;
 
-  Map<String, Object> get idR2Errors => idR2Control.errors;
+  Map<String, dynamic> get idR2Errors => idR2Control.errors;
 
-  Map<String, Object>? get nameErrors => nameControl.errors;
+  Map<String, dynamic>? get nameErrors => nameControl.errors;
 
-  Map<String, Object>? get logoImageErrors => logoImageControl.errors;
+  Map<String, dynamic>? get logoImageErrors => logoImageControl.errors;
 
-  Map<String, Object>? get yearErrors => yearControl.errors;
+  Map<String, dynamic>? get yearErrors => yearControl.errors;
 
-  Map<String, Object> get selectedSpacesErrors => selectedSpacesControl.errors;
+  Map<String, dynamic> get selectedSpacesErrors => selectedSpacesControl.errors;
 
   void get genderFocus => form.focus(genderControlPath());
 

@@ -16,29 +16,29 @@ void main() {
             import 'package:reactive_forms/reactive_forms.dart';
             import 'package:reactive_forms/src/validators/required_validator.dart';
             import 'package:reactive_forms_annotations/reactive_forms_annotations.dart';
-            
+
             part '$fileName.gform.dart';
-            
+
             class AllFieldsRequired extends Validator<dynamic> {
               const AllFieldsRequired() : super();
-            
+
               @override
               Map<String, dynamic>? validate(AbstractControl<dynamic> control) {
                 return null;
               }
             }
-            
+
             class UniqueEmailAsyncValidator extends AsyncValidator<dynamic> {
               const UniqueEmailAsyncValidator() : super();
-            
+
               @override
               Future<Map<String, dynamic>?> validate(
                   AbstractControl<dynamic> control) async {
               }
             }
-            
+
             enum UserMode { user, admin }
-          
+
             @Rf(output: true)
             @RfGroup(
               validators: [AllFieldsRequired()],
@@ -46,22 +46,22 @@ void main() {
             class LoginExtendedO {
               final String? email;
               final String email2;
-            
+
               final String password;
-            
+
               final bool rememberMe;
-            
+
               final String theme;
-            
+
               final UserMode mode;
-            
+
               final int timeout;
-            
+
               final double height;
-            
+
               final String? unAnnotated;
               final List<int> someIntList;
-            
+
               LoginExtendedO({
                 @RfControl(
                   validators: [RequiredValidator()],
@@ -163,7 +163,7 @@ class ReactiveLoginExtendedOForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -172,7 +172,7 @@ class ReactiveLoginExtendedOForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   static LoginExtendedOForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -199,7 +199,7 @@ class ReactiveLoginExtendedOForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -220,7 +220,7 @@ class LoginExtendedOFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -231,7 +231,7 @@ class LoginExtendedOFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -320,11 +320,11 @@ class _LoginExtendedOFormBuilderState extends State<LoginExtendedOFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -524,25 +524,25 @@ class LoginExtendedOForm
     }
   }
 
-  Map<String, Object>? get emailErrors => emailControl.errors;
+  Map<String, dynamic>? get emailErrors => emailControl.errors;
 
-  Map<String, Object> get email2Errors => email2Control.errors;
+  Map<String, dynamic> get email2Errors => email2Control.errors;
 
-  Map<String, Object> get passwordErrors => passwordControl.errors;
+  Map<String, dynamic> get passwordErrors => passwordControl.errors;
 
-  Map<String, Object> get rememberMeErrors => rememberMeControl.errors;
+  Map<String, dynamic> get rememberMeErrors => rememberMeControl.errors;
 
-  Map<String, Object> get themeErrors => themeControl.errors;
+  Map<String, dynamic> get themeErrors => themeControl.errors;
 
-  Map<String, Object> get modeErrors => modeControl.errors;
+  Map<String, dynamic> get modeErrors => modeControl.errors;
 
-  Map<String, Object> get timeoutErrors => timeoutControl.errors;
+  Map<String, dynamic> get timeoutErrors => timeoutControl.errors;
 
-  Map<String, Object> get heightErrors => heightControl.errors;
+  Map<String, dynamic> get heightErrors => heightControl.errors;
 
-  Map<String, Object>? get unAnnotatedErrors => unAnnotatedControl.errors;
+  Map<String, dynamic>? get unAnnotatedErrors => unAnnotatedControl.errors;
 
-  Map<String, Object> get someIntListErrors => someIntListControl.errors;
+  Map<String, dynamic> get someIntListErrors => someIntListControl.errors;
 
   void get emailFocus => form.focus(emailControlPath());
 

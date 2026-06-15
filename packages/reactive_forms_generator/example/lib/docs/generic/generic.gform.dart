@@ -50,7 +50,7 @@ class ReactiveTagsForm<T> extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -59,7 +59,7 @@ class ReactiveTagsForm<T> extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   static TagsForm<T>? of<T>(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -84,7 +84,7 @@ class ReactiveTagsForm<T> extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -103,7 +103,7 @@ class TagsFormBuilder<T> extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -114,7 +114,7 @@ class TagsFormBuilder<T> extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -201,11 +201,11 @@ class _TagsFormBuilderState<T> extends State<TagsFormBuilder<T>> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -248,7 +248,7 @@ class TagsForm<T> implements FormModel<Tags<T>, Tags<T>> {
     }
   }
 
-  Map<String, Object>? get tagsErrors => tagsControl.errors;
+  Map<String, dynamic>? get tagsErrors => tagsControl.errors;
 
   void get tagsFocus => form.focus(tagsControlPath());
 

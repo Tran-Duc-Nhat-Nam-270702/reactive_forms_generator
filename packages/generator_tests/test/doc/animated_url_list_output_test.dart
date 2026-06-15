@@ -15,21 +15,21 @@ void main() {
             import 'package:flutter/material.dart';
             import 'package:reactive_forms/reactive_forms.dart';
             import 'package:reactive_forms_annotations/reactive_forms_annotations.dart';
-            
+
             part '$fileName.gform.dart';
-            
+
             @Rf(output: true)
             class AnimatedUrlLisO {
               final List<UrlEntityO> urlList;
-            
+
               AnimatedUrlLisO({@RfArray() this.urlList = const []});
             }
-            
+
             @RfGroup()
             class UrlEntityO {
               final String? label;
               final String? url;
-            
+
               UrlEntityO({
                 @RfControl(validators: [
                   RequiredValidator(),
@@ -103,7 +103,7 @@ class ReactiveAnimatedUrlLisOForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -112,7 +112,7 @@ class ReactiveAnimatedUrlLisOForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   static AnimatedUrlLisOForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -139,7 +139,7 @@ class ReactiveAnimatedUrlLisOForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -160,7 +160,7 @@ class AnimatedUrlLisOFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -171,7 +171,7 @@ class AnimatedUrlLisOFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -261,11 +261,11 @@ class _AnimatedUrlLisOFormBuilderState
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -312,7 +312,7 @@ class AnimatedUrlLisOForm
     }
   }
 
-  Map<String, Object> get urlListErrors => urlListControl.errors;
+  Map<String, dynamic> get urlListErrors => urlListControl.errors;
 
   void get urlListFocus => form.focus(urlListControlPath());
 
@@ -719,9 +719,9 @@ class UrlEntityOForm implements FormModel<UrlEntityO, UrlEntityOOutput> {
     }
   }
 
-  Map<String, Object>? get labelErrors => labelControl.errors;
+  Map<String, dynamic>? get labelErrors => labelControl.errors;
 
-  Map<String, Object>? get urlErrors => urlControl.errors;
+  Map<String, dynamic>? get urlErrors => urlControl.errors;
 
   void get labelFocus => form.focus(labelControlPath());
 

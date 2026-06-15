@@ -16,23 +16,23 @@ void main() {
             import 'package:reactive_forms/reactive_forms.dart';
             import 'package:reactive_forms/src/validators/required_validator.dart';
             import 'package:reactive_forms_annotations/reactive_forms_annotations.dart';
-            
+
             part '$fileName.gform.dart';
-            
+
             enum UserMode { user, admin }
 
             @Rf(output: true)
             class ArrayNullableO {
               final List<String> emailList;
-            
+
               final List<bool?> fruitList;
-            
+
               final List<String?>? vegetablesList;
-            
+
               final List<String?>? someList;
-            
+
               final List<UserMode?>? modeList;
-            
+
               ArrayNullableO({
                 @RfArray(
                   validators: [RequiredValidator()],
@@ -106,7 +106,7 @@ class ReactiveArrayNullableOForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -115,7 +115,7 @@ class ReactiveArrayNullableOForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   static ArrayNullableOForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -142,7 +142,7 @@ class ReactiveArrayNullableOForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -163,7 +163,7 @@ class ArrayNullableOFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -174,7 +174,7 @@ class ArrayNullableOFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -263,11 +263,11 @@ class _ArrayNullableOFormBuilderState extends State<ArrayNullableOFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -394,15 +394,15 @@ class ArrayNullableOForm
     }
   }
 
-  Map<String, Object>? get someListErrors => someListControl.errors;
+  Map<String, dynamic>? get someListErrors => someListControl.errors;
 
-  Map<String, Object> get emailListErrors => emailListControl.errors;
+  Map<String, dynamic> get emailListErrors => emailListControl.errors;
 
-  Map<String, Object> get fruitListErrors => fruitListControl.errors;
+  Map<String, dynamic> get fruitListErrors => fruitListControl.errors;
 
-  Map<String, Object>? get vegetablesListErrors => vegetablesListControl.errors;
+  Map<String, dynamic>? get vegetablesListErrors => vegetablesListControl.errors;
 
-  Map<String, Object>? get modeListErrors => modeListControl.errors;
+  Map<String, dynamic>? get modeListErrors => modeListControl.errors;
 
   void get someListFocus => form.focus(someListControlPath());
 

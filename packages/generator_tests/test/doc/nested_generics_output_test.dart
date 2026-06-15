@@ -26,10 +26,10 @@ void main() {
               @RfControl() String? description,
               @Rf(output: false) IdO<P, C>? id,
             }) = _ProductDetailsO;
-          
+
             ProductDetailsO._();
           }
-          
+
           @freezed
           @Rf(output: false)
           @RfGroup()
@@ -38,27 +38,27 @@ void main() {
               @RfControl() String? companyName,
               @RfControl() String? name,
             }) = _IdO;
-          
+
             IdO._();
           }
-          
+
           @freezed
           abstract class Product with _\$Product {
             const factory Product({
               String? companyName,
               String? name,
             }) = _Product;
-          
+
             const Product._();
           }
-          
+
           @freezed
           abstract class Cart with _\$Cart {
             const factory Cart({
               Product? product,
               String? description,
             }) = _Cart;
-          
+
             const Cart._();
           }
           ''',
@@ -126,7 +126,7 @@ class ReactiveProductDetailsOForm<P extends Product, C extends Cart>
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -135,7 +135,7 @@ class ReactiveProductDetailsOForm<P extends Product, C extends Cart>
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   static ProductDetailsOForm<P, C>? of<P extends Product, C extends Cart>(
     BuildContext context, {
@@ -165,7 +165,7 @@ class ReactiveProductDetailsOForm<P extends Product, C extends Cart>
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -189,7 +189,7 @@ class ProductDetailsOFormBuilder<P extends Product, C extends Cart>
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -200,7 +200,7 @@ class ProductDetailsOFormBuilder<P extends Product, C extends Cart>
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -293,11 +293,11 @@ class _ProductDetailsOFormBuilderState<P extends Product, C extends Cart>
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -361,9 +361,9 @@ class ProductDetailsOForm<P extends Product, C extends Cart>
     }
   }
 
-  Map<String, Object>? get descriptionErrors => descriptionControl.errors;
+  Map<String, dynamic>? get descriptionErrors => descriptionControl.errors;
 
-  Map<String, Object>? get idErrors => idControl.errors;
+  Map<String, dynamic>? get idErrors => idControl.errors;
 
   void get descriptionFocus => form.focus(descriptionControlPath());
 
@@ -781,9 +781,9 @@ class IdOForm<P extends Product, C extends Cart>
     }
   }
 
-  Map<String, Object>? get companyNameErrors => companyNameControl.errors;
+  Map<String, dynamic>? get companyNameErrors => companyNameControl.errors;
 
-  Map<String, Object>? get nameErrors => nameControl.errors;
+  Map<String, dynamic>? get nameErrors => nameControl.errors;
 
   void get companyNameFocus => form.focus(companyNameControlPath());
 
@@ -1460,7 +1460,7 @@ class ReactiveIdOForm<P extends Product, C extends Cart>
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -1469,7 +1469,7 @@ class ReactiveIdOForm<P extends Product, C extends Cart>
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   static IdOForm<P, C>? of<P extends Product, C extends Cart>(
     BuildContext context, {
@@ -1497,7 +1497,7 @@ class ReactiveIdOForm<P extends Product, C extends Cart>
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -1518,7 +1518,7 @@ class IdOFormBuilder<P extends Product, C extends Cart> extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -1529,7 +1529,7 @@ class IdOFormBuilder<P extends Product, C extends Cart> extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -1617,11 +1617,11 @@ class _IdOFormBuilderState<P extends Product, C extends Cart>
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,

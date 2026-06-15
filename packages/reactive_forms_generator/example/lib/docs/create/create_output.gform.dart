@@ -53,7 +53,7 @@ class ReactiveMSICreateForm extends StatelessWidget {
     required this.form,
     required this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   }) : super(key: key);
 
   final Widget child;
@@ -62,7 +62,7 @@ class ReactiveMSICreateForm extends StatelessWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   static MSICreateForm? of(BuildContext context, {bool listen = true}) {
     if (listen) {
@@ -87,7 +87,7 @@ class ReactiveMSICreateForm extends StatelessWidget {
       stream: form.form.statusChanged,
       child: ReactiveFormPopScope(
         canPop: canPop,
-        onPopInvoked: onPopInvoked,
+        onPopInvokedWithResult: onPopInvokedWithResult,
         child: child,
       ),
     );
@@ -107,7 +107,7 @@ class MSICreateFormBuilder extends StatefulWidget {
     this.model,
     this.child,
     this.canPop,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     required this.builder,
     this.initState,
   }) : super(key: key);
@@ -118,7 +118,7 @@ class MSICreateFormBuilder extends StatefulWidget {
 
   final bool Function(FormGroup formGroup)? canPop;
 
-  final void Function(FormGroup formGroup, bool didPop)? onPopInvoked;
+  final ReactiveFormPopInvokedWithResultCallback<dynamic>? onPopInvokedWithResult;
 
   final Widget Function(
     BuildContext context,
@@ -205,11 +205,11 @@ class _MSICreateFormBuilderState extends State<MSICreateFormBuilder> {
       key: ObjectKey(_formModel),
       form: _formModel,
       // canPop: widget.canPop,
-      // onPopInvoked: widget.onPopInvoked,
+      // onPopInvokedWithResult: widget.onPopInvokedWithResult,
       child: ReactiveFormBuilder(
         form: () => _formModel.form,
         canPop: widget.canPop,
-        onPopInvoked: widget.onPopInvoked,
+        onPopInvokedWithResult: widget.onPopInvokedWithResult,
         builder: (context, formGroup, child) =>
             widget.builder(context, _formModel, widget.child),
         child: widget.child,
@@ -416,26 +416,26 @@ class MSICreateForm implements FormModel<MSICreate, MSICreateOutput> {
     }
   }
 
-  Map<String, Object>? get idErrors => idControl.errors;
+  Map<String, dynamic>? get idErrors => idControl.errors;
 
-  Map<String, Object>? get businessNumberErrors => businessNumberControl.errors;
+  Map<String, dynamic>? get businessNumberErrors => businessNumberControl.errors;
 
-  Map<String, Object>? get fileIdsErrors => fileIdsControl.errors;
+  Map<String, dynamic>? get fileIdsErrors => fileIdsControl.errors;
 
-  Map<String, Object>? get nameErrors => nameControl.errors;
+  Map<String, dynamic>? get nameErrors => nameControl.errors;
 
-  Map<String, Object>? get emailErrors => emailControl.errors;
+  Map<String, dynamic>? get emailErrors => emailControl.errors;
 
-  Map<String, Object> get sameMailingAddressAsCompanyErrors =>
+  Map<String, dynamic> get sameMailingAddressAsCompanyErrors =>
       sameMailingAddressAsCompanyControl.errors;
 
-  Map<String, Object> get companyAddressErrors => companyAddressControl.errors;
+  Map<String, dynamic> get companyAddressErrors => companyAddressControl.errors;
 
-  Map<String, Object> get primaryContactErrors => primaryContactControl.errors;
+  Map<String, dynamic> get primaryContactErrors => primaryContactControl.errors;
 
-  Map<String, Object> get mailingAddressErrors => mailingAddressControl.errors;
+  Map<String, dynamic> get mailingAddressErrors => mailingAddressControl.errors;
 
-  Map<String, Object> get adminsErrors => adminsControl.errors;
+  Map<String, dynamic> get adminsErrors => adminsControl.errors;
 
   void get idFocus => form.focus(idControlPath());
 
@@ -1645,14 +1645,14 @@ class AddressForm implements FormModel<Address, AddressOutput> {
     }
   }
 
-  Map<String, Object>? get streetErrors => streetControl.errors;
+  Map<String, dynamic>? get streetErrors => streetControl.errors;
 
-  Map<String, Object>? get cityErrors => cityControl.errors;
+  Map<String, dynamic>? get cityErrors => cityControl.errors;
 
-  Map<String, Object>? get stateOrProvinceErrors =>
+  Map<String, dynamic>? get stateOrProvinceErrors =>
       stateOrProvinceControl.errors;
 
-  Map<String, Object>? get zipCodeErrors => zipCodeControl.errors;
+  Map<String, dynamic>? get zipCodeErrors => zipCodeControl.errors;
 
   void get streetFocus => form.focus(streetControlPath());
 
@@ -2285,11 +2285,11 @@ class PrimaryContactForm
     }
   }
 
-  Map<String, Object>? get fullNameErrors => fullNameControl.errors;
+  Map<String, dynamic>? get fullNameErrors => fullNameControl.errors;
 
-  Map<String, Object>? get jobTitleErrors => jobTitleControl.errors;
+  Map<String, dynamic>? get jobTitleErrors => jobTitleControl.errors;
 
-  Map<String, Object>? get emailErrors => emailControl.errors;
+  Map<String, dynamic>? get emailErrors => emailControl.errors;
 
   void get fullNameFocus => form.focus(fullNameControlPath());
 
@@ -2828,11 +2828,11 @@ class AdminContactInformationForm
     }
   }
 
-  Map<String, Object>? get firstNameErrors => firstNameControl.errors;
+  Map<String, dynamic>? get firstNameErrors => firstNameControl.errors;
 
-  Map<String, Object>? get lastNameErrors => lastNameControl.errors;
+  Map<String, dynamic>? get lastNameErrors => lastNameControl.errors;
 
-  Map<String, Object>? get emailErrors => emailControl.errors;
+  Map<String, dynamic>? get emailErrors => emailControl.errors;
 
   void get firstNameFocus => form.focus(firstNameControlPath());
 
